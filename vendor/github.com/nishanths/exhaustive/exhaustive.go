@@ -4,7 +4,7 @@
 //
 // See "cmd/exhaustive" subpackage for the related command line program.
 //
-// Definition of enum
+// # Definition of enum
 //
 // The Go language spec does not provide an explicit definition for enums.
 // For the purpose of this program, an enum type is a package-level named type
@@ -16,15 +16,15 @@
 // In the code snippet below, Biome is an enum type with 3 members. (You may
 // also use iota instead of explicitly specifying values.)
 //
-//   type Biome int
+//	type Biome int
 //
-//   const (
-//       Tundra  Biome = 1
-//       Savanna Biome = 2
-//       Desert  Biome = 3
-//   )
+//	const (
+//	    Tundra  Biome = 1
+//	    Savanna Biome = 2
+//	    Desert  Biome = 3
+//	)
 //
-// Switch statement exhaustiveness
+// # Switch statement exhaustiveness
 //
 // An enum switch statement is exhaustive if it has cases for each of the enum's members.
 //
@@ -34,7 +34,7 @@
 // in an external package it is sufficient for just exported enum members
 // to be present in order to consider the switch exhaustive.
 //
-// Flags
+// # Flags
 //
 // The analyzer accepts a boolean flag: -default-signifies-exhaustive.
 // The flag, if enabled, indicates to the analyzer that switch statements
@@ -47,14 +47,14 @@
 // The other relevant flag is the -fix flag; its behavior is described
 // in the next section.
 //
-// Fixes
+// # Fixes
 //
 // The analyzer suggests fixes for a switch statement if it is not exhaustive
 // and does not have a 'default' case. The suggested fix always adds a single
 // case clause for the missing enum members.
 //
-//   case MissingA, MissingB, MissingC:
-//       panic(fmt.Sprintf("unhandled value: %v", v))
+//	case MissingA, MissingB, MissingC:
+//	    panic(fmt.Sprintf("unhandled value: %v", v))
 //
 // where v is the expression in the switch statement's tag (in other words, the
 // value being switched upon). If the switch statement's tag is a function or a
@@ -68,11 +68,11 @@
 //
 // Imports will be adjusted automatically to account for the "fmt" dependency.
 //
-// Skipping analysis
+// # Skipping analysis
 //
 // If the following directive comment:
 //
-//   //exhaustive:ignore
+//	//exhaustive:ignore
 //
 // is associated with a switch statement, the analyzer skips
 // checking of the switch statement and no diagnostics are reported.
@@ -168,7 +168,7 @@ func (e *enumsFact) String() string {
 	return buf.String()
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	e := findEnums(pass)
 	if len(e) != 0 {
 		pass.ExportPackageFact(&enumsFact{Enums: e})

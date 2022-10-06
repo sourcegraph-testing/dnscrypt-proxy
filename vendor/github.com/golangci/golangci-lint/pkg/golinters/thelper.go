@@ -13,7 +13,7 @@ import (
 func NewThelper(cfg *config.ThelperSettings) *goanalysis.Linter {
 	a := analyzer.NewAnalyzer()
 
-	cfgMap := map[string]map[string]interface{}{}
+	cfgMap := map[string]map[string]any{}
 	if cfg != nil {
 		var opts []string
 
@@ -47,7 +47,7 @@ func NewThelper(cfg *config.ThelperSettings) *goanalysis.Linter {
 			opts = append(opts, "tb_first")
 		}
 
-		cfgMap[a.Name] = map[string]interface{}{
+		cfgMap[a.Name] = map[string]any{
 			"checks": strings.Join(opts, ","),
 		}
 	}

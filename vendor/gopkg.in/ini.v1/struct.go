@@ -91,7 +91,7 @@ func setSliceWithProperType(key *Key, field reflect.Value, delim string, allowSh
 		return nil
 	}
 
-	var vals interface{}
+	var vals any
 	var err error
 
 	sliceOf := field.Type().Elem().Kind()
@@ -324,7 +324,7 @@ func (s *Section) mapTo(val reflect.Value, isStrict bool) error {
 }
 
 // MapTo maps section to given struct.
-func (s *Section) MapTo(v interface{}) error {
+func (s *Section) MapTo(v any) error {
 	typ := reflect.TypeOf(v)
 	val := reflect.ValueOf(v)
 	if typ.Kind() == reflect.Ptr {
@@ -339,7 +339,7 @@ func (s *Section) MapTo(v interface{}) error {
 
 // StrictMapTo maps section to given struct in strict mode,
 // which returns all possible error including value parsing error.
-func (s *Section) StrictMapTo(v interface{}) error {
+func (s *Section) StrictMapTo(v any) error {
 	typ := reflect.TypeOf(v)
 	val := reflect.ValueOf(v)
 	if typ.Kind() == reflect.Ptr {
@@ -353,18 +353,18 @@ func (s *Section) StrictMapTo(v interface{}) error {
 }
 
 // MapTo maps file to given struct.
-func (f *File) MapTo(v interface{}) error {
+func (f *File) MapTo(v any) error {
 	return f.Section("").MapTo(v)
 }
 
 // StrictMapTo maps file to given struct in strict mode,
 // which returns all possible error including value parsing error.
-func (f *File) StrictMapTo(v interface{}) error {
+func (f *File) StrictMapTo(v any) error {
 	return f.Section("").StrictMapTo(v)
 }
 
 // MapToWithMapper maps data sources to given struct with name mapper.
-func MapToWithMapper(v interface{}, mapper NameMapper, source interface{}, others ...interface{}) error {
+func MapToWithMapper(v any, mapper NameMapper, source any, others ...any) error {
 	cfg, err := Load(source, others...)
 	if err != nil {
 		return err
@@ -375,7 +375,7 @@ func MapToWithMapper(v interface{}, mapper NameMapper, source interface{}, other
 
 // StrictMapToWithMapper maps data sources to given struct with name mapper in strict mode,
 // which returns all possible error including value parsing error.
-func StrictMapToWithMapper(v interface{}, mapper NameMapper, source interface{}, others ...interface{}) error {
+func StrictMapToWithMapper(v any, mapper NameMapper, source any, others ...any) error {
 	cfg, err := Load(source, others...)
 	if err != nil {
 		return err
@@ -385,13 +385,13 @@ func StrictMapToWithMapper(v interface{}, mapper NameMapper, source interface{},
 }
 
 // MapTo maps data sources to given struct.
-func MapTo(v, source interface{}, others ...interface{}) error {
+func MapTo(v, source any, others ...any) error {
 	return MapToWithMapper(v, nil, source, others...)
 }
 
 // StrictMapTo maps data sources to given struct in strict mode,
 // which returns all possible error including value parsing error.
-func StrictMapTo(v, source interface{}, others ...interface{}) error {
+func StrictMapTo(v, source any, others ...any) error {
 	return StrictMapToWithMapper(v, nil, source, others...)
 }
 
@@ -573,7 +573,7 @@ func (s *Section) reflectFrom(val reflect.Value) error {
 }
 
 // ReflectFrom reflects secion from given struct.
-func (s *Section) ReflectFrom(v interface{}) error {
+func (s *Section) ReflectFrom(v any) error {
 	typ := reflect.TypeOf(v)
 	val := reflect.ValueOf(v)
 	if typ.Kind() == reflect.Ptr {
@@ -587,17 +587,17 @@ func (s *Section) ReflectFrom(v interface{}) error {
 }
 
 // ReflectFrom reflects file from given struct.
-func (f *File) ReflectFrom(v interface{}) error {
+func (f *File) ReflectFrom(v any) error {
 	return f.Section("").ReflectFrom(v)
 }
 
 // ReflectFromWithMapper reflects data sources from given struct with name mapper.
-func ReflectFromWithMapper(cfg *File, v interface{}, mapper NameMapper) error {
+func ReflectFromWithMapper(cfg *File, v any, mapper NameMapper) error {
 	cfg.NameMapper = mapper
 	return cfg.ReflectFrom(v)
 }
 
 // ReflectFrom reflects data sources from given struct.
-func ReflectFrom(cfg *File, v interface{}) error {
+func ReflectFrom(cfg *File, v any) error {
 	return ReflectFromWithMapper(cfg, v, nil)
 }

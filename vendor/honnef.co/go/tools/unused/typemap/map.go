@@ -27,7 +27,6 @@ import (
 // structs. Interfaces aren't deduplicated as not to conflate implicit
 // and explicit methods. Structs aren't deduplicated because we track
 // fields of each type separately.
-//
 type Map struct {
 	hasher Hasher             // shared by many Maps
 	table  map[uint32][]entry // maps hash to bucket; entry.key==nil means unused
@@ -37,7 +36,7 @@ type Map struct {
 // entry is an entry (key/value association) in a hash bucket.
 type entry struct {
 	key   types.Type
-	value interface{}
+	value any
 }
 
 // SetHasher sets the hasher used by Map.
@@ -60,14 +59,12 @@ type entry struct {
 //
 // If SetHasher is not called, the Map will create a private hasher at
 // the first call to Insert.
-//
 func (m *Map) SetHasher(hasher Hasher) {
 	m.hasher = hasher
 }
 
 // Delete removes the entry with the given key, if any.
 // It returns true if the entry was found.
-//
 func (m *Map) Delete(key types.Type) bool {
 	if m != nil && m.table != nil {
 		hash := m.hasher.Hash(key)
@@ -87,8 +84,7 @@ func (m *Map) Delete(key types.Type) bool {
 
 // At returns the map entry for the given key.
 // The result is nil if the entry is not present.
-//
-func (m *Map) At(key types.Type) interface{} {
+func (m *Map) At(key types.Type) any {
 	if m != nil && m.table != nil {
 		for _, e := range m.table[m.hasher.Hash(key)] {
 			if e.key != nil && Identical(key, e.key) {
@@ -101,7 +97,7 @@ func (m *Map) At(key types.Type) interface{} {
 
 // Set sets the map entry for key to val,
 // and returns the previous entry, if any.
-func (m *Map) Set(key types.Type, value interface{}) (prev interface{}) {
+func (m *Map) Set(key types.Type, value any) (prev any) {
 	if m.table != nil {
 		hash := m.hasher.Hash(key)
 		bucket := m.table[hash]
@@ -148,8 +144,7 @@ func (m *Map) Len() int {
 // f will not be invoked for it, but if f inserts a map entry that
 // Iterate has not yet reached, whether or not f will be invoked for
 // it is unspecified.
-//
-func (m *Map) Iterate(f func(key types.Type, value interface{})) {
+func (m *Map) Iterate(f func(key types.Type, value any)) {
 	if m != nil {
 		for _, bucket := range m.table {
 			for _, e := range bucket {
@@ -165,7 +160,7 @@ func (m *Map) Iterate(f func(key types.Type, value interface{})) {
 // The order is unspecified.
 func (m *Map) Keys() []types.Type {
 	keys := make([]types.Type, 0, m.Len())
-	m.Iterate(func(key types.Type, _ interface{}) {
+	m.Iterate(func(key types.Type, _ any) {
 		keys = append(keys, key)
 	})
 	return keys
@@ -178,7 +173,7 @@ func (m *Map) toString(values bool) string {
 	var buf bytes.Buffer
 	fmt.Fprint(&buf, "{")
 	sep := ""
-	m.Iterate(func(key types.Type, value interface{}) {
+	m.Iterate(func(key types.Type, value any) {
 		fmt.Fprint(&buf, sep)
 		sep = ", "
 		fmt.Fprint(&buf, key)
@@ -193,14 +188,12 @@ func (m *Map) toString(values bool) string {
 // String returns a string representation of the map's entries.
 // Values are printed using fmt.Sprintf("%v", v).
 // Order is unspecified.
-//
 func (m *Map) String() string {
 	return m.toString(true)
 }
 
 // KeysString returns a string representation of the map's key set.
 // Order is unspecified.
-//
 func (m *Map) KeysString() string {
 	return m.toString(false)
 }

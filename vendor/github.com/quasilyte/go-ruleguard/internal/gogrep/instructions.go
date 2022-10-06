@@ -26,7 +26,7 @@ const (
 type program struct {
 	insts   []instruction
 	strings []string
-	ifaces  []interface{}
+	ifaces  []any
 }
 
 func formatProgram(p *program) []string {

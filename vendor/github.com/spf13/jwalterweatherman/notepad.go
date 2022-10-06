@@ -172,15 +172,15 @@ type Feedback struct {
 	log *log.Logger
 }
 
-func (fb *Feedback) Println(v ...interface{}) {
+func (fb *Feedback) Println(v ...any) {
 	fb.output(fmt.Sprintln(v...))
 }
 
-func (fb *Feedback) Printf(format string, v ...interface{}) {
+func (fb *Feedback) Printf(format string, v ...any) {
 	fb.output(fmt.Sprintf(format, v...))
 }
 
-func (fb *Feedback) Print(v ...interface{}) {
+func (fb *Feedback) Print(v ...any) {
 	fb.output(fmt.Sprint(v...))
 }
 

@@ -1,3 +1,4 @@
+//go:build main
 // +build main
 
 package main
@@ -45,7 +46,7 @@ var opcodePrototypes = []opcodeProto{
 	{"IsNotNil", "op", "(value) -> (result:bool)"},
 
 	{"Not", "op", "(value:bool) -> (result:bool)"},
-	
+
 	{"EqInt", "op", "(x:int y:int) -> (result:bool)"},
 	{"NotEqInt", "op", "(x:int y:int) -> (result:bool)"},
 	{"GtInt", "op", "(x:int y:int) -> (result:bool)"},
@@ -141,7 +142,7 @@ func main() {
 	}
 
 	var buf bytes.Buffer
-	err := fileTemplate.Execute(&buf, map[string]interface{}{
+	err := fileTemplate.Execute(&buf, map[string]any{
 		"Opcodes": opcodes,
 	})
 	if err != nil {

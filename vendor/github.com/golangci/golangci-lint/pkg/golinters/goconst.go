@@ -28,7 +28,7 @@ func NewGoconst() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			issues, err := checkConstants(pass, lintCtx)
 			if err != nil || len(issues) == 0 {
 				return nil, err

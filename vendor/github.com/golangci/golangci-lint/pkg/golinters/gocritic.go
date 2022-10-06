@@ -39,7 +39,7 @@ Dynamic rules are written declaratively with AST patterns, filters, report messa
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			linterCtx := gocriticlinter.NewContext(pass.Fset, sizes)
 			enabledCheckers, err := buildEnabledCheckers(lintCtx, linterCtx)
 			if err != nil {

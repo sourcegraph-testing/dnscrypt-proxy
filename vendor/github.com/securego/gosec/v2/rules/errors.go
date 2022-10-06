@@ -88,9 +88,9 @@ func NewNoErrorCheck(id string, conf gosec.Config) (gosec.Rule, []ast.Node) {
 	whitelist.Add("io.PipeWriter", "CloseWithError")
 
 	if configured, ok := conf["G104"]; ok {
-		if whitelisted, ok := configured.(map[string]interface{}); ok {
+		if whitelisted, ok := configured.(map[string]any); ok {
 			for pkg, funcs := range whitelisted {
-				if funcs, ok := funcs.([]interface{}); ok {
+				if funcs, ok := funcs.([]any); ok {
 					whitelist.AddAll(pkg, toStringSlice(funcs)...)
 				}
 			}
@@ -108,7 +108,7 @@ func NewNoErrorCheck(id string, conf gosec.Config) (gosec.Rule, []ast.Node) {
 	}, []ast.Node{(*ast.AssignStmt)(nil), (*ast.ExprStmt)(nil)}
 }
 
-func toStringSlice(values []interface{}) []string {
+func toStringSlice(values []any) []string {
 	result := []string{}
 	for _, value := range values {
 		if value, ok := value.(string); ok {

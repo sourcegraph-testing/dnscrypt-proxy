@@ -14,12 +14,12 @@ import (
 type MSIConvertable interface {
 	// MSI gets a map[string]interface{} (msi) representing the
 	// object.
-	MSI() map[string]interface{}
+	MSI() map[string]any
 }
 
 // Map provides extended functionality for working with
 // untyped data, in particular map[string]interface (msi).
-type Map map[string]interface{}
+type Map map[string]any
 
 // Value returns the internal value instance
 func (m Map) Value() *Value {
@@ -32,33 +32,32 @@ var Nil = New(nil)
 // New creates a new Map containing the map[string]interface{} in the data argument.
 // If the data argument is not a map[string]interface, New attempts to call the
 // MSI() method on the MSIConvertable interface to create one.
-func New(data interface{}) Map {
-	if _, ok := data.(map[string]interface{}); !ok {
+func New(data any) Map {
+	if _, ok := data.(map[string]any); !ok {
 		if converter, ok := data.(MSIConvertable); ok {
 			data = converter.MSI()
 		} else {
 			return nil
 		}
 	}
-	return Map(data.(map[string]interface{}))
+	return Map(data.(map[string]any))
 }
 
 // MSI creates a map[string]interface{} and puts it inside a new Map.
 //
 // The arguments follow a key, value pattern.
 //
-//
 // Returns nil if any key argument is non-string or if there are an odd number of arguments.
 //
-// Example
+// # Example
 //
 // To easily create Maps:
 //
-//     m := objx.MSI("name", "Mat", "age", 29, "subobj", objx.MSI("active", true))
+//	m := objx.MSI("name", "Mat", "age", 29, "subobj", objx.MSI("active", true))
 //
-//     // creates an Map equivalent to
-//     m := objx.Map{"name": "Mat", "age": 29, "subobj": objx.Map{"active": true}}
-func MSI(keyAndValuePairs ...interface{}) Map {
+//	// creates an Map equivalent to
+//	m := objx.Map{"name": "Mat", "age": 29, "subobj": objx.Map{"active": true}}
+func MSI(keyAndValuePairs ...any) Map {
 	newMap := Map{}
 	keyAndValuePairsLen := len(keyAndValuePairs)
 	if keyAndValuePairsLen%2 != 0 {
@@ -97,7 +96,7 @@ func MustFromJSON(jsonString string) Map {
 //
 // Returns an error if the JSON is invalid.
 func FromJSON(jsonString string) (Map, error) {
-	var data interface{}
+	var data any
 	err := json.Unmarshal([]byte(jsonString), &data)
 	if err != nil {
 		return Nil, err

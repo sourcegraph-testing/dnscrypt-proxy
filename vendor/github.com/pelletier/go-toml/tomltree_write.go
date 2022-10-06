@@ -78,7 +78,7 @@ func encodeTomlString(value string) string {
 	return b.String()
 }
 
-func tomlValueStringRepresentation(v interface{}, indent string, arraysOneElementPerLine bool) (string, error) {
+func tomlValueStringRepresentation(v any, indent string, arraysOneElementPerLine bool) (string, error) {
 	// this interface check is added to dereference the change made in the writeTo function.
 	// That change was made to allow this function to see formatting options.
 	tv, ok := v.(*tomlValue)
@@ -304,21 +304,21 @@ func (t *Tree) String() string {
 // ToMap recursively generates a representation of the tree using Go built-in structures.
 // The following types are used:
 //
-//	* bool
-//	* float64
-//	* int64
-//	* string
-//	* uint64
-//	* time.Time
-//	* map[string]interface{} (where interface{} is any of this list)
-//	* []interface{} (where interface{} is any of this list)
-func (t *Tree) ToMap() map[string]interface{} {
-	result := map[string]interface{}{}
+//   - bool
+//   - float64
+//   - int64
+//   - string
+//   - uint64
+//   - time.Time
+//   - map[string]interface{} (where interface{} is any of this list)
+//   - []interface{} (where interface{} is any of this list)
+func (t *Tree) ToMap() map[string]any {
+	result := map[string]any{}
 
 	for k, v := range t.values {
 		switch node := v.(type) {
 		case []*Tree:
-			var array []interface{}
+			var array []any
 			for _, item := range node {
 				array = append(array, item.ToMap())
 			}

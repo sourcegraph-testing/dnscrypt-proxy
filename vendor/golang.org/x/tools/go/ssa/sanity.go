@@ -30,7 +30,6 @@ type sanity struct {
 //
 // Sanity-checking is intended to facilitate the debugging of code
 // transformation passes.
-//
 func sanityCheck(fn *Function, reporter io.Writer) bool {
 	if reporter == nil {
 		reporter = os.Stderr
@@ -40,7 +39,6 @@ func sanityCheck(fn *Function, reporter io.Writer) bool {
 
 // mustSanityCheck is like sanityCheck but panics instead of returning
 // a negative result.
-//
 func mustSanityCheck(fn *Function, reporter io.Writer) {
 	if !sanityCheck(fn, reporter) {
 		fn.WriteTo(os.Stderr)
@@ -48,7 +46,7 @@ func mustSanityCheck(fn *Function, reporter io.Writer) {
 	}
 }
 
-func (s *sanity) diagnostic(prefix, format string, args ...interface{}) {
+func (s *sanity) diagnostic(prefix, format string, args ...any) {
 	fmt.Fprintf(s.reporter, "%s: function %s", prefix, s.fn)
 	if s.block != nil {
 		fmt.Fprintf(s.reporter, ", block %s", s.block)
@@ -58,12 +56,12 @@ func (s *sanity) diagnostic(prefix, format string, args ...interface{}) {
 	io.WriteString(s.reporter, "\n")
 }
 
-func (s *sanity) errorf(format string, args ...interface{}) {
+func (s *sanity) errorf(format string, args ...any) {
 	s.insane = true
 	s.diagnostic("Error", format, args...)
 }
 
-func (s *sanity) warnf(format string, args ...interface{}) {
+func (s *sanity) warnf(format string, args ...any) {
 	s.diagnostic("Warning", format, args...)
 }
 

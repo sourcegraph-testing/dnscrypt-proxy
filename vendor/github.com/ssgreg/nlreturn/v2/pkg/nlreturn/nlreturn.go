@@ -22,7 +22,7 @@ func NewAnalyzer() *analysis.Analyzer {
 	}
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	for _, f := range pass.Files {
 		ast.Inspect(f, func(node ast.Node) bool {
 			switch c := node.(type) {

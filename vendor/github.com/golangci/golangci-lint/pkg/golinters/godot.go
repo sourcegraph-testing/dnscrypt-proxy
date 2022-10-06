@@ -44,7 +44,7 @@ func NewGodot() *goanalysis.Linter {
 			settings.Scope = godot.DeclScope
 		}
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var issues []godot.Issue
 			for _, file := range pass.Files {
 				iss, err := godot.Run(file, pass.Fset, settings)

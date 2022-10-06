@@ -145,7 +145,7 @@ var (
 	abiSuff      = re(`^(.+)<(ABI.+)>$`)
 )
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	// No work if no assembly files.
 	var sfiles []string
 	for _, fname := range pass.OtherFiles {
@@ -221,7 +221,7 @@ Files:
 		for lineno, line := range lines {
 			lineno++
 
-			badf := func(format string, args ...interface{}) {
+			badf := func(format string, args ...any) {
 				pass.Reportf(analysisutil.LineStart(tf, lineno), "[%s] %s: %s", arch, fnName, fmt.Sprintf(format, args...))
 			}
 
@@ -635,7 +635,7 @@ func asmParseDecl(pass *analysis.Pass, decl *ast.FuncDecl) map[string]*asmFunc {
 }
 
 // asmCheckVar checks a single variable reference.
-func asmCheckVar(badf func(string, ...interface{}), fn *asmFunc, line, expr string, off int, v *asmVar, archDef *asmArch) {
+func asmCheckVar(badf func(string, ...any), fn *asmFunc, line, expr string, off int, v *asmVar, archDef *asmArch) {
 	m := asmOpcode.FindStringSubmatch(line)
 	if m == nil {
 		if !strings.HasPrefix(strings.TrimSpace(line), "//") {

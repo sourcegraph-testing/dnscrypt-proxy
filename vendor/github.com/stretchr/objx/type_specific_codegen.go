@@ -6,8 +6,8 @@ package objx
 
 // Inter gets the value as a interface{}, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
-func (v *Value) Inter(optionalDefault ...interface{}) interface{} {
-	if s, ok := v.data.(interface{}); ok {
+func (v *Value) Inter(optionalDefault ...any) any {
+	if s, ok := v.data.(any); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -19,14 +19,14 @@ func (v *Value) Inter(optionalDefault ...interface{}) interface{} {
 // MustInter gets the value as a interface{}.
 //
 // Panics if the object is not a interface{}.
-func (v *Value) MustInter() interface{} {
-	return v.data.(interface{})
+func (v *Value) MustInter() any {
+	return v.data.(any)
 }
 
 // InterSlice gets the value as a []interface{}, returns the optionalDefault
 // value or nil if the value is not a []interface{}.
-func (v *Value) InterSlice(optionalDefault ...[]interface{}) []interface{} {
-	if s, ok := v.data.([]interface{}); ok {
+func (v *Value) InterSlice(optionalDefault ...[]any) []any {
+	if s, ok := v.data.([]any); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -38,19 +38,19 @@ func (v *Value) InterSlice(optionalDefault ...[]interface{}) []interface{} {
 // MustInterSlice gets the value as a []interface{}.
 //
 // Panics if the object is not a []interface{}.
-func (v *Value) MustInterSlice() []interface{} {
-	return v.data.([]interface{})
+func (v *Value) MustInterSlice() []any {
+	return v.data.([]any)
 }
 
 // IsInter gets whether the object contained is a interface{} or not.
 func (v *Value) IsInter() bool {
-	_, ok := v.data.(interface{})
+	_, ok := v.data.(any)
 	return ok
 }
 
 // IsInterSlice gets whether the object contained is a []interface{} or not.
 func (v *Value) IsInterSlice() bool {
-	_, ok := v.data.([]interface{})
+	_, ok := v.data.([]any)
 	return ok
 }
 
@@ -58,7 +58,7 @@ func (v *Value) IsInterSlice() bool {
 // in the []interface{}.
 //
 // Panics if the object is the wrong type.
-func (v *Value) EachInter(callback func(int, interface{}) bool) *Value {
+func (v *Value) EachInter(callback func(int, any) bool) *Value {
 	for index, val := range v.MustInterSlice() {
 		carryon := callback(index, val)
 		if !carryon {
@@ -71,9 +71,9 @@ func (v *Value) EachInter(callback func(int, interface{}) bool) *Value {
 // WhereInter uses the specified decider function to select items
 // from the []interface{}.  The object contained in the result will contain
 // only the selected items.
-func (v *Value) WhereInter(decider func(int, interface{}) bool) *Value {
-	var selected []interface{}
-	v.EachInter(func(index int, val interface{}) bool {
+func (v *Value) WhereInter(decider func(int, any) bool) *Value {
+	var selected []any
+	v.EachInter(func(index int, val any) bool {
 		shouldSelect := decider(index, val)
 		if !shouldSelect {
 			selected = append(selected, val)
@@ -86,12 +86,12 @@ func (v *Value) WhereInter(decider func(int, interface{}) bool) *Value {
 // GroupInter uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
 // result will contain a map[string][]interface{}.
-func (v *Value) GroupInter(grouper func(int, interface{}) string) *Value {
-	groups := make(map[string][]interface{})
-	v.EachInter(func(index int, val interface{}) bool {
+func (v *Value) GroupInter(grouper func(int, any) string) *Value {
+	groups := make(map[string][]any)
+	v.EachInter(func(index int, val any) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
-			groups[group] = make([]interface{}, 0)
+			groups[group] = make([]any, 0)
 		}
 		groups[group] = append(groups[group], val)
 		return true
@@ -102,10 +102,10 @@ func (v *Value) GroupInter(grouper func(int, interface{}) string) *Value {
 // ReplaceInter uses the specified function to replace each interface{}s
 // by iterating each item.  The data in the returned result will be a
 // []interface{} containing the replaced items.
-func (v *Value) ReplaceInter(replacer func(int, interface{}) interface{}) *Value {
+func (v *Value) ReplaceInter(replacer func(int, any) any) *Value {
 	arr := v.MustInterSlice()
-	replaced := make([]interface{}, len(arr))
-	v.EachInter(func(index int, val interface{}) bool {
+	replaced := make([]any, len(arr))
+	v.EachInter(func(index int, val any) bool {
 		replaced[index] = replacer(index, val)
 		return true
 	})
@@ -115,10 +115,10 @@ func (v *Value) ReplaceInter(replacer func(int, interface{}) interface{}) *Value
 // CollectInter uses the specified collector function to collect a value
 // for each of the interface{}s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectInter(collector func(int, interface{}) interface{}) *Value {
+func (v *Value) CollectInter(collector func(int, any) any) *Value {
 	arr := v.MustInterSlice()
-	collected := make([]interface{}, len(arr))
-	v.EachInter(func(index int, val interface{}) bool {
+	collected := make([]any, len(arr))
+	v.EachInter(func(index int, val any) bool {
 		collected[index] = collector(index, val)
 		return true
 	})
@@ -131,8 +131,8 @@ func (v *Value) CollectInter(collector func(int, interface{}) interface{}) *Valu
 
 // MSI gets the value as a map[string]interface{}, returns the optionalDefault
 // value or a system default object if the value is the wrong type.
-func (v *Value) MSI(optionalDefault ...map[string]interface{}) map[string]interface{} {
-	if s, ok := v.data.(map[string]interface{}); ok {
+func (v *Value) MSI(optionalDefault ...map[string]any) map[string]any {
+	if s, ok := v.data.(map[string]any); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -144,14 +144,14 @@ func (v *Value) MSI(optionalDefault ...map[string]interface{}) map[string]interf
 // MustMSI gets the value as a map[string]interface{}.
 //
 // Panics if the object is not a map[string]interface{}.
-func (v *Value) MustMSI() map[string]interface{} {
-	return v.data.(map[string]interface{})
+func (v *Value) MustMSI() map[string]any {
+	return v.data.(map[string]any)
 }
 
 // MSISlice gets the value as a []map[string]interface{}, returns the optionalDefault
 // value or nil if the value is not a []map[string]interface{}.
-func (v *Value) MSISlice(optionalDefault ...[]map[string]interface{}) []map[string]interface{} {
-	if s, ok := v.data.([]map[string]interface{}); ok {
+func (v *Value) MSISlice(optionalDefault ...[]map[string]any) []map[string]any {
+	if s, ok := v.data.([]map[string]any); ok {
 		return s
 	}
 	if len(optionalDefault) == 1 {
@@ -163,19 +163,19 @@ func (v *Value) MSISlice(optionalDefault ...[]map[string]interface{}) []map[stri
 // MustMSISlice gets the value as a []map[string]interface{}.
 //
 // Panics if the object is not a []map[string]interface{}.
-func (v *Value) MustMSISlice() []map[string]interface{} {
-	return v.data.([]map[string]interface{})
+func (v *Value) MustMSISlice() []map[string]any {
+	return v.data.([]map[string]any)
 }
 
 // IsMSI gets whether the object contained is a map[string]interface{} or not.
 func (v *Value) IsMSI() bool {
-	_, ok := v.data.(map[string]interface{})
+	_, ok := v.data.(map[string]any)
 	return ok
 }
 
 // IsMSISlice gets whether the object contained is a []map[string]interface{} or not.
 func (v *Value) IsMSISlice() bool {
-	_, ok := v.data.([]map[string]interface{})
+	_, ok := v.data.([]map[string]any)
 	return ok
 }
 
@@ -183,7 +183,7 @@ func (v *Value) IsMSISlice() bool {
 // in the []map[string]interface{}.
 //
 // Panics if the object is the wrong type.
-func (v *Value) EachMSI(callback func(int, map[string]interface{}) bool) *Value {
+func (v *Value) EachMSI(callback func(int, map[string]any) bool) *Value {
 	for index, val := range v.MustMSISlice() {
 		carryon := callback(index, val)
 		if !carryon {
@@ -196,9 +196,9 @@ func (v *Value) EachMSI(callback func(int, map[string]interface{}) bool) *Value 
 // WhereMSI uses the specified decider function to select items
 // from the []map[string]interface{}.  The object contained in the result will contain
 // only the selected items.
-func (v *Value) WhereMSI(decider func(int, map[string]interface{}) bool) *Value {
-	var selected []map[string]interface{}
-	v.EachMSI(func(index int, val map[string]interface{}) bool {
+func (v *Value) WhereMSI(decider func(int, map[string]any) bool) *Value {
+	var selected []map[string]any
+	v.EachMSI(func(index int, val map[string]any) bool {
 		shouldSelect := decider(index, val)
 		if !shouldSelect {
 			selected = append(selected, val)
@@ -211,12 +211,12 @@ func (v *Value) WhereMSI(decider func(int, map[string]interface{}) bool) *Value 
 // GroupMSI uses the specified grouper function to group the items
 // keyed by the return of the grouper.  The object contained in the
 // result will contain a map[string][]map[string]interface{}.
-func (v *Value) GroupMSI(grouper func(int, map[string]interface{}) string) *Value {
-	groups := make(map[string][]map[string]interface{})
-	v.EachMSI(func(index int, val map[string]interface{}) bool {
+func (v *Value) GroupMSI(grouper func(int, map[string]any) string) *Value {
+	groups := make(map[string][]map[string]any)
+	v.EachMSI(func(index int, val map[string]any) bool {
 		group := grouper(index, val)
 		if _, ok := groups[group]; !ok {
-			groups[group] = make([]map[string]interface{}, 0)
+			groups[group] = make([]map[string]any, 0)
 		}
 		groups[group] = append(groups[group], val)
 		return true
@@ -227,10 +227,10 @@ func (v *Value) GroupMSI(grouper func(int, map[string]interface{}) string) *Valu
 // ReplaceMSI uses the specified function to replace each map[string]interface{}s
 // by iterating each item.  The data in the returned result will be a
 // []map[string]interface{} containing the replaced items.
-func (v *Value) ReplaceMSI(replacer func(int, map[string]interface{}) map[string]interface{}) *Value {
+func (v *Value) ReplaceMSI(replacer func(int, map[string]any) map[string]any) *Value {
 	arr := v.MustMSISlice()
-	replaced := make([]map[string]interface{}, len(arr))
-	v.EachMSI(func(index int, val map[string]interface{}) bool {
+	replaced := make([]map[string]any, len(arr))
+	v.EachMSI(func(index int, val map[string]any) bool {
 		replaced[index] = replacer(index, val)
 		return true
 	})
@@ -240,10 +240,10 @@ func (v *Value) ReplaceMSI(replacer func(int, map[string]interface{}) map[string
 // CollectMSI uses the specified collector function to collect a value
 // for each of the map[string]interface{}s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectMSI(collector func(int, map[string]interface{}) interface{}) *Value {
+func (v *Value) CollectMSI(collector func(int, map[string]any) any) *Value {
 	arr := v.MustMSISlice()
-	collected := make([]interface{}, len(arr))
-	v.EachMSI(func(index int, val map[string]interface{}) bool {
+	collected := make([]any, len(arr))
+	v.EachMSI(func(index int, val map[string]any) bool {
 		collected[index] = collector(index, val)
 		return true
 	})
@@ -365,9 +365,9 @@ func (v *Value) ReplaceObjxMap(replacer func(int, Map) Map) *Value {
 // CollectObjxMap uses the specified collector function to collect a value
 // for each of the (Map)s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectObjxMap(collector func(int, Map) interface{}) *Value {
+func (v *Value) CollectObjxMap(collector func(int, Map) any) *Value {
 	arr := v.MustObjxMapSlice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachObjxMap(func(index int, val Map) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -490,9 +490,9 @@ func (v *Value) ReplaceBool(replacer func(int, bool) bool) *Value {
 // CollectBool uses the specified collector function to collect a value
 // for each of the bools in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectBool(collector func(int, bool) interface{}) *Value {
+func (v *Value) CollectBool(collector func(int, bool) any) *Value {
 	arr := v.MustBoolSlice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachBool(func(index int, val bool) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -615,9 +615,9 @@ func (v *Value) ReplaceStr(replacer func(int, string) string) *Value {
 // CollectStr uses the specified collector function to collect a value
 // for each of the strings in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectStr(collector func(int, string) interface{}) *Value {
+func (v *Value) CollectStr(collector func(int, string) any) *Value {
 	arr := v.MustStrSlice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachStr(func(index int, val string) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -740,9 +740,9 @@ func (v *Value) ReplaceInt(replacer func(int, int) int) *Value {
 // CollectInt uses the specified collector function to collect a value
 // for each of the ints in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectInt(collector func(int, int) interface{}) *Value {
+func (v *Value) CollectInt(collector func(int, int) any) *Value {
 	arr := v.MustIntSlice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachInt(func(index int, val int) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -865,9 +865,9 @@ func (v *Value) ReplaceInt8(replacer func(int, int8) int8) *Value {
 // CollectInt8 uses the specified collector function to collect a value
 // for each of the int8s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectInt8(collector func(int, int8) interface{}) *Value {
+func (v *Value) CollectInt8(collector func(int, int8) any) *Value {
 	arr := v.MustInt8Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachInt8(func(index int, val int8) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -990,9 +990,9 @@ func (v *Value) ReplaceInt16(replacer func(int, int16) int16) *Value {
 // CollectInt16 uses the specified collector function to collect a value
 // for each of the int16s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectInt16(collector func(int, int16) interface{}) *Value {
+func (v *Value) CollectInt16(collector func(int, int16) any) *Value {
 	arr := v.MustInt16Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachInt16(func(index int, val int16) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -1115,9 +1115,9 @@ func (v *Value) ReplaceInt32(replacer func(int, int32) int32) *Value {
 // CollectInt32 uses the specified collector function to collect a value
 // for each of the int32s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectInt32(collector func(int, int32) interface{}) *Value {
+func (v *Value) CollectInt32(collector func(int, int32) any) *Value {
 	arr := v.MustInt32Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachInt32(func(index int, val int32) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -1240,9 +1240,9 @@ func (v *Value) ReplaceInt64(replacer func(int, int64) int64) *Value {
 // CollectInt64 uses the specified collector function to collect a value
 // for each of the int64s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectInt64(collector func(int, int64) interface{}) *Value {
+func (v *Value) CollectInt64(collector func(int, int64) any) *Value {
 	arr := v.MustInt64Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachInt64(func(index int, val int64) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -1365,9 +1365,9 @@ func (v *Value) ReplaceUint(replacer func(int, uint) uint) *Value {
 // CollectUint uses the specified collector function to collect a value
 // for each of the uints in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectUint(collector func(int, uint) interface{}) *Value {
+func (v *Value) CollectUint(collector func(int, uint) any) *Value {
 	arr := v.MustUintSlice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachUint(func(index int, val uint) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -1490,9 +1490,9 @@ func (v *Value) ReplaceUint8(replacer func(int, uint8) uint8) *Value {
 // CollectUint8 uses the specified collector function to collect a value
 // for each of the uint8s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectUint8(collector func(int, uint8) interface{}) *Value {
+func (v *Value) CollectUint8(collector func(int, uint8) any) *Value {
 	arr := v.MustUint8Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachUint8(func(index int, val uint8) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -1615,9 +1615,9 @@ func (v *Value) ReplaceUint16(replacer func(int, uint16) uint16) *Value {
 // CollectUint16 uses the specified collector function to collect a value
 // for each of the uint16s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectUint16(collector func(int, uint16) interface{}) *Value {
+func (v *Value) CollectUint16(collector func(int, uint16) any) *Value {
 	arr := v.MustUint16Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachUint16(func(index int, val uint16) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -1740,9 +1740,9 @@ func (v *Value) ReplaceUint32(replacer func(int, uint32) uint32) *Value {
 // CollectUint32 uses the specified collector function to collect a value
 // for each of the uint32s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectUint32(collector func(int, uint32) interface{}) *Value {
+func (v *Value) CollectUint32(collector func(int, uint32) any) *Value {
 	arr := v.MustUint32Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachUint32(func(index int, val uint32) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -1865,9 +1865,9 @@ func (v *Value) ReplaceUint64(replacer func(int, uint64) uint64) *Value {
 // CollectUint64 uses the specified collector function to collect a value
 // for each of the uint64s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectUint64(collector func(int, uint64) interface{}) *Value {
+func (v *Value) CollectUint64(collector func(int, uint64) any) *Value {
 	arr := v.MustUint64Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachUint64(func(index int, val uint64) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -1990,9 +1990,9 @@ func (v *Value) ReplaceUintptr(replacer func(int, uintptr) uintptr) *Value {
 // CollectUintptr uses the specified collector function to collect a value
 // for each of the uintptrs in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectUintptr(collector func(int, uintptr) interface{}) *Value {
+func (v *Value) CollectUintptr(collector func(int, uintptr) any) *Value {
 	arr := v.MustUintptrSlice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachUintptr(func(index int, val uintptr) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -2115,9 +2115,9 @@ func (v *Value) ReplaceFloat32(replacer func(int, float32) float32) *Value {
 // CollectFloat32 uses the specified collector function to collect a value
 // for each of the float32s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectFloat32(collector func(int, float32) interface{}) *Value {
+func (v *Value) CollectFloat32(collector func(int, float32) any) *Value {
 	arr := v.MustFloat32Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachFloat32(func(index int, val float32) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -2240,9 +2240,9 @@ func (v *Value) ReplaceFloat64(replacer func(int, float64) float64) *Value {
 // CollectFloat64 uses the specified collector function to collect a value
 // for each of the float64s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectFloat64(collector func(int, float64) interface{}) *Value {
+func (v *Value) CollectFloat64(collector func(int, float64) any) *Value {
 	arr := v.MustFloat64Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachFloat64(func(index int, val float64) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -2365,9 +2365,9 @@ func (v *Value) ReplaceComplex64(replacer func(int, complex64) complex64) *Value
 // CollectComplex64 uses the specified collector function to collect a value
 // for each of the complex64s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectComplex64(collector func(int, complex64) interface{}) *Value {
+func (v *Value) CollectComplex64(collector func(int, complex64) any) *Value {
 	arr := v.MustComplex64Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachComplex64(func(index int, val complex64) bool {
 		collected[index] = collector(index, val)
 		return true
@@ -2490,9 +2490,9 @@ func (v *Value) ReplaceComplex128(replacer func(int, complex128) complex128) *Va
 // CollectComplex128 uses the specified collector function to collect a value
 // for each of the complex128s in the slice.  The data returned will be a
 // []interface{}.
-func (v *Value) CollectComplex128(collector func(int, complex128) interface{}) *Value {
+func (v *Value) CollectComplex128(collector func(int, complex128) any) *Value {
 	arr := v.MustComplex128Slice()
-	collected := make([]interface{}, len(arr))
+	collected := make([]any, len(arr))
 	v.EachComplex128(func(index int, val complex128) bool {
 		collected[index] = collector(index, val)
 		return true

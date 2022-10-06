@@ -30,7 +30,7 @@ func NewMakezero() *goanalysis.Linter {
 	).WithContextSetter(func(lintCtx *linter.Context) {
 		s := &lintCtx.Settings().Makezero
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var res []goanalysis.Issue
 			linter := makezero.NewLinter(s.Always)
 			for _, file := range pass.Files {

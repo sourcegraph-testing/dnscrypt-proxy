@@ -22,27 +22,27 @@ func init() {
 	ConsoleLogger.err = log.New(os.Stderr, "E: ", log.Ltime)
 }
 
-func (c consoleLogger) Error(v ...interface{}) error {
+func (c consoleLogger) Error(v ...any) error {
 	c.err.Print(v...)
 	return nil
 }
-func (c consoleLogger) Warning(v ...interface{}) error {
+func (c consoleLogger) Warning(v ...any) error {
 	c.warn.Print(v...)
 	return nil
 }
-func (c consoleLogger) Info(v ...interface{}) error {
+func (c consoleLogger) Info(v ...any) error {
 	c.info.Print(v...)
 	return nil
 }
-func (c consoleLogger) Errorf(format string, a ...interface{}) error {
+func (c consoleLogger) Errorf(format string, a ...any) error {
 	c.err.Printf(format, a...)
 	return nil
 }
-func (c consoleLogger) Warningf(format string, a ...interface{}) error {
+func (c consoleLogger) Warningf(format string, a ...any) error {
 	c.warn.Printf(format, a...)
 	return nil
 }
-func (c consoleLogger) Infof(format string, a ...interface{}) error {
+func (c consoleLogger) Infof(format string, a ...any) error {
 	c.info.Printf(format, a...)
 	return nil
 }

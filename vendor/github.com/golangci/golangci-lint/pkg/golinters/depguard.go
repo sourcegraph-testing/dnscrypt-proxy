@@ -62,7 +62,7 @@ func NewDepguard() *goanalysis.Linter {
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
 		dgSettings := &lintCtx.Settings().Depguard
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			prog := goanalysis.MakeFakeLoaderProgram(pass)
 			dg := &depguard.Depguard{
 				Packages:      dgSettings.Packages,

@@ -98,7 +98,7 @@ func checkInlineFunc(stmt ast.Expr) int {
 	return 0
 }
 
-func parseBodyListStmts(t interface{}) int {
+func parseBodyListStmts(t any) int {
 	i := reflect.ValueOf(t).Elem().FieldByName(`Body`).Elem().FieldByName(`List`).Interface()
 	return parseStmts(i.([]ast.Stmt))
 }

@@ -94,10 +94,10 @@ type textNode interface {
 // textWrap is a wrapper that concatenates a prefix and/or a suffix
 // to the underlying node.
 type textWrap struct {
-	Prefix   string      // e.g., "bytes.Buffer{"
-	Value    textNode    // textWrap | textList | textLine
-	Suffix   string      // e.g., "}"
-	Metadata interface{} // arbitrary metadata; has no effect on formatting
+	Prefix   string   // e.g., "bytes.Buffer{"
+	Value    textNode // textWrap | textList | textLine
+	Suffix   string   // e.g., "}"
+	Metadata any      // arbitrary metadata; has no effect on formatting
 }
 
 func (s *textWrap) Len() int {
@@ -393,6 +393,7 @@ func (s diffStats) Append(ds diffStats) diffStats {
 // String prints a humanly-readable summary of coalesced records.
 //
 // Example:
+//
 //	diffStats{Name: "Field", NumIgnored: 5}.String() => "5 ignored fields"
 func (s diffStats) String() string {
 	var ss []string

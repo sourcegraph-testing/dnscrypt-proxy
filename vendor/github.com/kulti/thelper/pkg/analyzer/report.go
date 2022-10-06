@@ -15,10 +15,10 @@ type reports struct {
 type report struct {
 	pos    token.Pos
 	format string
-	args   []interface{}
+	args   []any
 }
 
-func (rr *reports) Reportf(pos token.Pos, format string, args ...interface{}) {
+func (rr *reports) Reportf(pos token.Pos, format string, args ...any) {
 	rr.reports = append(rr.reports, report{
 		pos:    pos,
 		format: format,

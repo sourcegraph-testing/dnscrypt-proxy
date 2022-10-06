@@ -50,7 +50,7 @@ type parser struct {
 	comment *bytes.Buffer
 }
 
-func (p *parser) debug(format string, args ...interface{}) {
+func (p *parser) debug(format string, args ...any) {
 	if p.options.DebugFunc != nil {
 		p.options.DebugFunc(fmt.Sprintf(format, args...))
 	}

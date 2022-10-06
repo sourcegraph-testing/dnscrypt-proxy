@@ -64,59 +64,59 @@ var SeverityName = []string{
 	SeverityFatal:    "FATAL",
 }
 
-func Debugf(format string, args ...interface{}) {
+func Debugf(format string, args ...any) {
 	logf(SeverityDebug, format, args...)
 }
 
-func Infof(format string, args ...interface{}) {
+func Infof(format string, args ...any) {
 	logf(SeverityInfo, format, args...)
 }
 
-func Noticef(format string, args ...interface{}) {
+func Noticef(format string, args ...any) {
 	logf(SeverityNotice, format, args...)
 }
 
-func Warnf(format string, args ...interface{}) {
+func Warnf(format string, args ...any) {
 	logf(SeverityWarning, format, args...)
 }
 
-func Errorf(format string, args ...interface{}) {
+func Errorf(format string, args ...any) {
 	logf(SeverityError, format, args...)
 }
 
-func Criticalf(format string, args ...interface{}) {
+func Criticalf(format string, args ...any) {
 	logf(SeverityCritical, format, args...)
 }
 
-func Fatalf(format string, args ...interface{}) {
+func Fatalf(format string, args ...any) {
 	logf(SeverityFatal, format, args...)
 }
 
-func Debug(message interface{}) {
+func Debug(message any) {
 	log(SeverityDebug, message)
 }
 
-func Info(message interface{}) {
+func Info(message any) {
 	log(SeverityInfo, message)
 }
 
-func Notice(message interface{}) {
+func Notice(message any) {
 	log(SeverityNotice, message)
 }
 
-func Warn(message interface{}) {
+func Warn(message any) {
 	log(SeverityWarning, message)
 }
 
-func Error(message interface{}) {
+func Error(message any) {
 	log(SeverityError, message)
 }
 
-func Critical(message interface{}) {
+func Critical(message any) {
 	log(SeverityCritical, message)
 }
 
-func Fatal(message interface{}) {
+func Fatal(message any) {
 	log(SeverityFatal, message)
 }
 
@@ -132,7 +132,7 @@ func (s *Severity) String() string {
 	return strconv.FormatInt(int64(*s), 10)
 }
 
-func (s *Severity) Get() interface{} {
+func (s *Severity) Get() any {
 	return s.get()
 }
 
@@ -216,7 +216,7 @@ func createFileDescriptor() {
 	}
 }
 
-func logf(severity Severity, format string, args ...interface{}) {
+func logf(severity Severity, format string, args ...any) {
 	if severity < _globals.logLevel.get() {
 		return
 	}
@@ -265,6 +265,6 @@ func logf(severity Severity, format string, args ...interface{}) {
 	}
 }
 
-func log(severity Severity, args interface{}) {
+func log(severity Severity, args any) {
 	logf(severity, "%v", args)
 }

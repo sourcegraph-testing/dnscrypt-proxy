@@ -141,7 +141,7 @@ func (c *Checker) DebugMode(w io.Writer) {
 	c.debugWriter = w
 }
 
-func (c *Checker) debug(format string, a ...interface{}) {
+func (c *Checker) debug(format string, a ...any) {
 	if c.debugWriter != nil {
 		fmt.Fprintf(c.debugWriter, format, a...)
 	}

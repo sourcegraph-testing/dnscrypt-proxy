@@ -30,15 +30,15 @@ import (
 // we started with Kinds and then realized Types were the better solution,
 // but have a promise to not break backwards compat so we now support
 // both.
-type DecodeHookFunc interface{}
+type DecodeHookFunc any
 
 // DecodeHookFuncType is a DecodeHookFunc which has complete information about
 // the source and target types.
-type DecodeHookFuncType func(reflect.Type, reflect.Type, interface{}) (interface{}, error)
+type DecodeHookFuncType func(reflect.Type, reflect.Type, any) (any, error)
 
 // DecodeHookFuncKind is a DecodeHookFunc which knows only the Kinds of the
 // source and target types.
-type DecodeHookFuncKind func(reflect.Kind, reflect.Kind, interface{}) (interface{}, error)
+type DecodeHookFuncKind func(reflect.Kind, reflect.Kind, any) (any, error)
 
 // DecoderConfig is the configuration that is used to create a new decoder
 // and allows customization of various aspects of decoding.
@@ -86,7 +86,7 @@ type DecoderConfig struct {
 
 	// Result is a pointer to the struct that will contain the decoded
 	// value.
-	Result interface{}
+	Result any
 
 	// The tag name that mapstructure reads for field names. This
 	// defaults to "mapstructure"
@@ -116,7 +116,7 @@ type Metadata struct {
 
 // Decode takes an input structure and uses reflection to translate it to
 // the output structure. output must be a pointer to a map or struct.
-func Decode(input interface{}, output interface{}) error {
+func Decode(input any, output any) error {
 	config := &DecoderConfig{
 		Metadata: nil,
 		Result:   output,
@@ -132,7 +132,7 @@ func Decode(input interface{}, output interface{}) error {
 
 // WeakDecode is the same as Decode but is shorthand to enable
 // WeaklyTypedInput. See DecoderConfig for more info.
-func WeakDecode(input, output interface{}) error {
+func WeakDecode(input, output any) error {
 	config := &DecoderConfig{
 		Metadata:         nil,
 		Result:           output,
@@ -149,7 +149,7 @@ func WeakDecode(input, output interface{}) error {
 
 // DecodeMetadata is the same as Decode, but is shorthand to
 // enable metadata collection. See DecoderConfig for more info.
-func DecodeMetadata(input interface{}, output interface{}, metadata *Metadata) error {
+func DecodeMetadata(input any, output any, metadata *Metadata) error {
 	config := &DecoderConfig{
 		Metadata: metadata,
 		Result:   output,
@@ -166,7 +166,7 @@ func DecodeMetadata(input interface{}, output interface{}, metadata *Metadata) e
 // WeakDecodeMetadata is the same as Decode, but is shorthand to
 // enable both WeaklyTypedInput and metadata collection. See
 // DecoderConfig for more info.
-func WeakDecodeMetadata(input interface{}, output interface{}, metadata *Metadata) error {
+func WeakDecodeMetadata(input any, output any, metadata *Metadata) error {
 	config := &DecoderConfig{
 		Metadata:         metadata,
 		Result:           output,
@@ -218,12 +218,12 @@ func NewDecoder(config *DecoderConfig) (*Decoder, error) {
 
 // Decode decodes the given raw interface to the target pointer specified
 // by the configuration.
-func (d *Decoder) Decode(input interface{}) error {
+func (d *Decoder) Decode(input any) error {
 	return d.decode("", input, reflect.ValueOf(d.config.Result).Elem())
 }
 
 // Decodes an unknown data type into a specific reflection value.
-func (d *Decoder) decode(name string, input interface{}, outVal reflect.Value) error {
+func (d *Decoder) decode(name string, input any, outVal reflect.Value) error {
 	var inputVal reflect.Value
 	if input != nil {
 		inputVal = reflect.ValueOf(input)
@@ -312,7 +312,7 @@ func (d *Decoder) decode(name string, input interface{}, outVal reflect.Value) e
 
 // This decodes a basic type (bool, int, string, etc.) and sets the
 // value to "data" of that type.
-func (d *Decoder) decodeBasic(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeBasic(name string, data any, val reflect.Value) error {
 	if val.IsValid() && val.Elem().IsValid() {
 		return d.decode(name, data, val.Elem())
 	}
@@ -341,7 +341,7 @@ func (d *Decoder) decodeBasic(name string, data interface{}, val reflect.Value) 
 	return nil
 }
 
-func (d *Decoder) decodeString(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeString(name string, data any, val reflect.Value) error {
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
 	dataKind := getKind(dataVal)
 
@@ -393,7 +393,7 @@ func (d *Decoder) decodeString(name string, data interface{}, val reflect.Value)
 	return nil
 }
 
-func (d *Decoder) decodeInt(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeInt(name string, data any, val reflect.Value) error {
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
 	dataKind := getKind(dataVal)
 	dataType := dataVal.Type()
@@ -435,7 +435,7 @@ func (d *Decoder) decodeInt(name string, data interface{}, val reflect.Value) er
 	return nil
 }
 
-func (d *Decoder) decodeUint(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeUint(name string, data any, val reflect.Value) error {
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
 	dataKind := getKind(dataVal)
 
@@ -478,7 +478,7 @@ func (d *Decoder) decodeUint(name string, data interface{}, val reflect.Value) e
 	return nil
 }
 
-func (d *Decoder) decodeBool(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeBool(name string, data any, val reflect.Value) error {
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
 	dataKind := getKind(dataVal)
 
@@ -509,7 +509,7 @@ func (d *Decoder) decodeBool(name string, data interface{}, val reflect.Value) e
 	return nil
 }
 
-func (d *Decoder) decodeFloat(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeFloat(name string, data any, val reflect.Value) error {
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
 	dataKind := getKind(dataVal)
 	dataType := dataVal.Type()
@@ -551,7 +551,7 @@ func (d *Decoder) decodeFloat(name string, data interface{}, val reflect.Value) 
 	return nil
 }
 
-func (d *Decoder) decodeMap(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeMap(name string, data any, val reflect.Value) error {
 	valType := val.Type()
 	valKeyType := valType.Key()
 	valElemType := valType.Elem()
@@ -738,7 +738,7 @@ func (d *Decoder) decodeMapFromStruct(name string, dataVal reflect.Value, val re
 	return nil
 }
 
-func (d *Decoder) decodePtr(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodePtr(name string, data any, val reflect.Value) error {
 	// If the input data is nil, then we want to just set the output
 	// pointer to be nil as well.
 	isNil := data == nil
@@ -785,7 +785,7 @@ func (d *Decoder) decodePtr(name string, data interface{}, val reflect.Value) er
 	return nil
 }
 
-func (d *Decoder) decodeFunc(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeFunc(name string, data any, val reflect.Value) error {
 	// Create an element of the concrete (non pointer) type and decode
 	// into that. Then set the value of the pointer to this type.
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
@@ -798,7 +798,7 @@ func (d *Decoder) decodeFunc(name string, data interface{}, val reflect.Value) e
 	return nil
 }
 
-func (d *Decoder) decodeSlice(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeSlice(name string, data any, val reflect.Value) error {
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
 	dataValKind := dataVal.Kind()
 	valType := val.Type()
@@ -820,7 +820,7 @@ func (d *Decoder) decodeSlice(name string, data interface{}, val reflect.Value) 
 					return nil
 				}
 				// Create slice of maps of other sizes
-				return d.decodeSlice(name, []interface{}{data}, val)
+				return d.decodeSlice(name, []any{data}, val)
 
 			case dataValKind == reflect.String && valElemType.Kind() == reflect.Uint8:
 				return d.decodeSlice(name, []byte(dataVal.String()), val)
@@ -829,7 +829,7 @@ func (d *Decoder) decodeSlice(name string, data interface{}, val reflect.Value) 
 			// and "lift" it into it. i.e. a string becomes a string slice.
 			default:
 				// Just re-try this function with data as a slice.
-				return d.decodeSlice(name, []interface{}{data}, val)
+				return d.decodeSlice(name, []any{data}, val)
 			}
 		}
 
@@ -876,7 +876,7 @@ func (d *Decoder) decodeSlice(name string, data interface{}, val reflect.Value) 
 	return nil
 }
 
-func (d *Decoder) decodeArray(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeArray(name string, data any, val reflect.Value) error {
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
 	dataValKind := dataVal.Kind()
 	valType := val.Type()
@@ -901,7 +901,7 @@ func (d *Decoder) decodeArray(name string, data interface{}, val reflect.Value) 
 				// and "lift" it into it. i.e. a string becomes a string array.
 				default:
 					// Just re-try this function with data as a slice.
-					return d.decodeArray(name, []interface{}{data}, val)
+					return d.decodeArray(name, []any{data}, val)
 				}
 			}
 
@@ -943,7 +943,7 @@ func (d *Decoder) decodeArray(name string, data interface{}, val reflect.Value) 
 	return nil
 }
 
-func (d *Decoder) decodeStruct(name string, data interface{}, val reflect.Value) error {
+func (d *Decoder) decodeStruct(name string, data any, val reflect.Value) error {
 	dataVal := reflect.Indirect(reflect.ValueOf(data))
 
 	// If the type of the value to write to and the data match directly,
@@ -962,7 +962,7 @@ func (d *Decoder) decodeStruct(name string, data interface{}, val reflect.Value)
 		// Not the most efficient way to do this but we can optimize later if
 		// we want to. To convert from struct to struct we go to map first
 		// as an intermediary.
-		m := make(map[string]interface{})
+		m := make(map[string]any)
 		mval := reflect.Indirect(reflect.ValueOf(&m))
 		if err := d.decodeMapFromStruct(name, dataVal, mval, mval); err != nil {
 			return err
@@ -985,7 +985,7 @@ func (d *Decoder) decodeStructFromMap(name string, dataVal, val reflect.Value) e
 	}
 
 	dataValKeys := make(map[reflect.Value]struct{})
-	dataValKeysUnused := make(map[interface{}]struct{})
+	dataValKeysUnused := make(map[any]struct{})
 	for _, dataValKey := range dataVal.MapKeys() {
 		dataValKeys[dataValKey] = struct{}{}
 		dataValKeysUnused[dataValKey.Interface()] = struct{}{}

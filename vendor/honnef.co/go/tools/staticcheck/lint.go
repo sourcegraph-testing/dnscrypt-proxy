@@ -931,7 +931,7 @@ func isInLoop(b *ir.BasicBlock) bool {
 	return false
 }
 
-func CheckUntrappableSignal(pass *analysis.Pass) (interface{}, error) {
+func CheckUntrappableSignal(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		call := node.(*ast.CallExpr)
 		if !code.IsCallToAny(pass, call,
@@ -1001,7 +1001,7 @@ func CheckUntrappableSignal(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckTemplate(pass *analysis.Pass) (interface{}, error) {
+func CheckTemplate(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		call := node.(*ast.CallExpr)
 		// OPT(dh): use integer for kind
@@ -1049,7 +1049,7 @@ var (
 	checkTimeSleepConstantPatternRs  = pattern.MustParse(`(BinaryExpr duration "*" (SelectorExpr (Ident "time") (Ident "Second")))`)
 )
 
-func CheckTimeSleepConstant(pass *analysis.Pass) (interface{}, error) {
+func CheckTimeSleepConstant(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		call := node.(*ast.CallExpr)
 		if !code.IsCallTo(pass, call, "time.Sleep") {
@@ -1086,7 +1086,7 @@ var checkWaitgroupAddQ = pattern.MustParse(`
 				_
 				call@(CallExpr (Function "(*sync.WaitGroup).Add") _):_) _))`)
 
-func CheckWaitgroupAdd(pass *analysis.Pass) (interface{}, error) {
+func CheckWaitgroupAdd(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		if m, ok := code.Match(pass, checkWaitgroupAddQ, node); ok {
 			call := m.State["call"].(ast.Node)
@@ -1097,7 +1097,7 @@ func CheckWaitgroupAdd(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckInfiniteEmptyLoop(pass *analysis.Pass) (interface{}, error) {
+func CheckInfiniteEmptyLoop(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		loop := node.(*ast.ForStmt)
 		if len(loop.Body.List) != 0 || loop.Post != nil {
@@ -1141,7 +1141,7 @@ func CheckInfiniteEmptyLoop(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckDeferInInfiniteLoop(pass *analysis.Pass) (interface{}, error) {
+func CheckDeferInInfiniteLoop(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		mightExit := false
 		var defers []ast.Stmt
@@ -1183,7 +1183,7 @@ func CheckDeferInInfiniteLoop(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckDubiousDeferInChannelRangeLoop(pass *analysis.Pass) (interface{}, error) {
+func CheckDubiousDeferInChannelRangeLoop(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		loop := node.(*ast.RangeStmt)
 		typ := pass.TypesInfo.TypeOf(loop.X)
@@ -1207,7 +1207,7 @@ func CheckDubiousDeferInChannelRangeLoop(pass *analysis.Pass) (interface{}, erro
 	return nil, nil
 }
 
-func CheckTestMainExit(pass *analysis.Pass) (interface{}, error) {
+func CheckTestMainExit(pass *analysis.Pass) (any, error) {
 	if code.IsGoVersion(pass, 15) {
 		// Beginning with Go 1.15, the test framework will call
 		// os.Exit for us.
@@ -1289,7 +1289,7 @@ func isTestMain(pass *analysis.Pass, decl *ast.FuncDecl) bool {
 	return code.IsOfType(pass, arg.Type, "*testing.M")
 }
 
-func CheckExec(pass *analysis.Pass) (interface{}, error) {
+func CheckExec(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		call := node.(*ast.CallExpr)
 		if !code.IsCallTo(pass, call, "os/exec.Command") {
@@ -1309,7 +1309,7 @@ func CheckExec(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckLoopEmptyDefault(pass *analysis.Pass) (interface{}, error) {
+func CheckLoopEmptyDefault(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		loop := node.(*ast.ForStmt)
 		if len(loop.Body.List) != 1 || loop.Cond != nil || loop.Init != nil {
@@ -1335,7 +1335,7 @@ func CheckLoopEmptyDefault(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckLhsRhsIdentical(pass *analysis.Pass) (interface{}, error) {
+func CheckLhsRhsIdentical(pass *analysis.Pass) (any, error) {
 	var isFloat func(T types.Type) bool
 	isFloat = func(T types.Type) bool {
 		switch T := T.Underlying().(type) {
@@ -1403,7 +1403,7 @@ func CheckLhsRhsIdentical(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckScopedBreak(pass *analysis.Pass) (interface{}, error) {
+func CheckScopedBreak(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		var body *ast.BlockStmt
 		switch node := node.(type) {
@@ -1462,7 +1462,7 @@ func CheckScopedBreak(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckUnsafePrintf(pass *analysis.Pass) (interface{}, error) {
+func CheckUnsafePrintf(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		call := node.(*ast.CallExpr)
 		name := code.CallName(pass, call)
@@ -1501,7 +1501,7 @@ func CheckUnsafePrintf(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckEarlyDefer(pass *analysis.Pass) (interface{}, error) {
+func CheckEarlyDefer(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		block := node.(*ast.BlockStmt)
 		if len(block.List) < 2 {
@@ -1579,7 +1579,7 @@ func selectorX(sel *ast.SelectorExpr) ast.Node {
 	}
 }
 
-func CheckEmptyCriticalSection(pass *analysis.Pass) (interface{}, error) {
+func CheckEmptyCriticalSection(pass *analysis.Pass) (any, error) {
 	if pass.Pkg.Path() == "sync_test" {
 		// exception for the sync package's tests
 		return nil, nil
@@ -1652,7 +1652,7 @@ var (
 	checkIneffectiveCopyQ2 = pattern.MustParse(`(StarExpr (UnaryExpr "&" _))`)
 )
 
-func CheckIneffectiveCopy(pass *analysis.Pass) (interface{}, error) {
+func CheckIneffectiveCopy(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		if m, ok := code.Match(pass, checkIneffectiveCopyQ1, node); ok {
 			if ident, ok := m.State["obj"].(*ast.Ident); !ok || !cgoIdent.MatchString(ident.Name) {
@@ -1666,7 +1666,7 @@ func CheckIneffectiveCopy(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckCanonicalHeaderKey(pass *analysis.Pass) (interface{}, error) {
+func CheckCanonicalHeaderKey(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node, push bool) bool {
 		if !push {
 			return false
@@ -1724,7 +1724,7 @@ func CheckCanonicalHeaderKey(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckBenchmarkN(pass *analysis.Pass) (interface{}, error) {
+func CheckBenchmarkN(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		assign := node.(*ast.AssignStmt)
 		if len(assign.Lhs) != 1 || len(assign.Rhs) != 1 {
@@ -1746,7 +1746,7 @@ func CheckBenchmarkN(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckUnreadVariableValues(pass *analysis.Pass) (interface{}, error) {
+func CheckUnreadVariableValues(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		if irutil.IsExample(fn) {
 			continue
@@ -1869,7 +1869,7 @@ func CheckUnreadVariableValues(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckPredeterminedBooleanExprs(pass *analysis.Pass) (interface{}, error) {
+func CheckPredeterminedBooleanExprs(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		for _, block := range fn.Blocks {
 			for _, ins := range block.Instrs {
@@ -1913,7 +1913,7 @@ func CheckPredeterminedBooleanExprs(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckNilMaps(pass *analysis.Pass) (interface{}, error) {
+func CheckNilMaps(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		for _, block := range fn.Blocks {
 			for _, ins := range block.Instrs {
@@ -1935,7 +1935,7 @@ func CheckNilMaps(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckExtremeComparison(pass *analysis.Pass) (interface{}, error) {
+func CheckExtremeComparison(pass *analysis.Pass) (any, error) {
 	isobj := func(expr ast.Expr, name string) bool {
 		sel, ok := expr.(*ast.SelectorExpr)
 		if !ok {
@@ -2059,7 +2059,7 @@ func consts(val ir.Value, out []*ir.Const, visitedPhis map[string]bool) ([]*ir.C
 	return uniq, true
 }
 
-func CheckLoopCondition(pass *analysis.Pass) (interface{}, error) {
+func CheckLoopCondition(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		cb := func(node ast.Node) bool {
 			loop, ok := node.(*ast.ForStmt)
@@ -2127,7 +2127,7 @@ func CheckLoopCondition(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckArgOverwritten(pass *analysis.Pass) (interface{}, error) {
+func CheckArgOverwritten(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		cb := func(node ast.Node) bool {
 			var typ *ast.FuncType
@@ -2203,7 +2203,7 @@ func CheckArgOverwritten(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckIneffectiveLoop(pass *analysis.Pass) (interface{}, error) {
+func CheckIneffectiveLoop(pass *analysis.Pass) (any, error) {
 	// This check detects some, but not all unconditional loop exits.
 	// We give up in the following cases:
 	//
@@ -2320,7 +2320,7 @@ func CheckIneffectiveLoop(pass *analysis.Pass) (interface{}, error) {
 
 var checkNilContextQ = pattern.MustParse(`(CallExpr fun@(Function _) (Builtin "nil"):_)`)
 
-func CheckNilContext(pass *analysis.Pass) (interface{}, error) {
+func CheckNilContext(pass *analysis.Pass) (any, error) {
 	todo := &ast.CallExpr{
 		Fun: edit.Selector("context", "TODO"),
 	}
@@ -2363,7 +2363,7 @@ var (
 	checkSeekerR = pattern.MustParse(`(CallExpr fun [arg2 arg1])`)
 )
 
-func CheckSeeker(pass *analysis.Pass) (interface{}, error) {
+func CheckSeeker(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		if _, edits, ok := code.MatchAndEdit(pass, checkSeekerQ, checkSeekerR, node); ok {
 			report.Report(pass, node, "the first argument of io.Seeker is the offset, but an io.Seek* constant is being used instead",
@@ -2374,7 +2374,7 @@ func CheckSeeker(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckIneffectiveAppend(pass *analysis.Pass) (interface{}, error) {
+func CheckIneffectiveAppend(pass *analysis.Pass) (any, error) {
 	isAppend := func(ins ir.Value) bool {
 		call, ok := ins.(*ir.Call)
 		if !ok {
@@ -2443,7 +2443,7 @@ func CheckIneffectiveAppend(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckConcurrentTesting(pass *analysis.Pass) (interface{}, error) {
+func CheckConcurrentTesting(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		for _, block := range fn.Blocks {
 			for _, ins := range block.Instrs {
@@ -2518,7 +2518,7 @@ func eachCall(fn *ir.Function, cb func(caller *ir.Function, site ir.CallInstruct
 	}
 }
 
-func CheckCyclicFinalizer(pass *analysis.Pass) (interface{}, error) {
+func CheckCyclicFinalizer(pass *analysis.Pass) (any, error) {
 	cb := func(caller *ir.Function, site ir.CallInstruction, callee *ir.Function) {
 		if callee.RelString(nil) != "runtime.SetFinalizer" {
 			return
@@ -2583,7 +2583,7 @@ func CheckSliceOutOfBounds(pass *analysis.Pass) (interface{}, error) {
 }
 */
 
-func CheckDeferLock(pass *analysis.Pass) (interface{}, error) {
+func CheckDeferLock(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		for _, block := range fn.Blocks {
 			instrs := irutil.FilterDebug(block.Instrs)
@@ -2623,7 +2623,7 @@ func CheckDeferLock(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckNaNComparison(pass *analysis.Pass) (interface{}, error) {
+func CheckNaNComparison(pass *analysis.Pass) (any, error) {
 	isNaN := func(v ir.Value) bool {
 		call, ok := v.(*ir.Call)
 		if !ok {
@@ -2647,7 +2647,7 @@ func CheckNaNComparison(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckInfiniteRecursion(pass *analysis.Pass) (interface{}, error) {
+func CheckInfiniteRecursion(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		eachCall(fn, func(caller *ir.Function, site ir.CallInstruction, callee *ir.Function) {
 			if callee != fn {
@@ -2708,7 +2708,7 @@ func isName(pass *analysis.Pass, expr ast.Expr, name string) bool {
 	return objectName(obj) == name
 }
 
-func CheckLeakyTimeTick(pass *analysis.Pass) (interface{}, error) {
+func CheckLeakyTimeTick(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		if code.IsMainLike(pass) || code.IsInTest(pass, fn) {
 			continue
@@ -2731,7 +2731,7 @@ func CheckLeakyTimeTick(pass *analysis.Pass) (interface{}, error) {
 
 var checkDoubleNegationQ = pattern.MustParse(`(UnaryExpr "!" single@(UnaryExpr "!" x))`)
 
-func CheckDoubleNegation(pass *analysis.Pass) (interface{}, error) {
+func CheckDoubleNegation(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		if m, ok := code.Match(pass, checkDoubleNegationQ, node); ok {
 			report.Report(pass, node, "negating a boolean twice has no effect; is this a typo?", report.Fixes(
@@ -2743,7 +2743,7 @@ func CheckDoubleNegation(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckRepeatedIfElse(pass *analysis.Pass) (interface{}, error) {
+func CheckRepeatedIfElse(pass *analysis.Pass) (any, error) {
 	seen := map[ast.Node]bool{}
 
 	var collectConds func(ifstmt *ast.IfStmt, conds []ast.Expr) ([]ast.Expr, bool)
@@ -2793,7 +2793,7 @@ func CheckRepeatedIfElse(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckSillyBitwiseOps(pass *analysis.Pass) (interface{}, error) {
+func CheckSillyBitwiseOps(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		binop := node.(*ast.BinaryExpr)
 		b, ok := pass.TypesInfo.TypeOf(binop).Underlying().(*types.Basic)
@@ -2879,7 +2879,7 @@ func isIota(obj types.Object) bool {
 	return c.Pkg() == nil
 }
 
-func CheckNonOctalFileMode(pass *analysis.Pass) (interface{}, error) {
+func CheckNonOctalFileMode(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		call := node.(*ast.CallExpr)
 		for _, arg := range call.Args {
@@ -2910,7 +2910,7 @@ func CheckNonOctalFileMode(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckPureFunctions(pass *analysis.Pass) (interface{}, error) {
+func CheckPureFunctions(pass *analysis.Pass) (any, error) {
 	pure := pass.ResultOf[facts.Purity].(facts.PurityResult)
 
 fnLoop:
@@ -2964,7 +2964,7 @@ fnLoop:
 	return nil, nil
 }
 
-func CheckDeprecated(pass *analysis.Pass) (interface{}, error) {
+func CheckDeprecated(pass *analysis.Pass) (any, error) {
 	deprs := pass.ResultOf[facts.Deprecated].(facts.DeprecatedResult)
 
 	// Selectors can appear outside of function literals, e.g. when
@@ -3086,13 +3086,13 @@ func CheckDeprecated(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func callChecker(rules map[string]CallCheck) func(pass *analysis.Pass) (interface{}, error) {
-	return func(pass *analysis.Pass) (interface{}, error) {
+func callChecker(rules map[string]CallCheck) func(pass *analysis.Pass) (any, error) {
+	return func(pass *analysis.Pass) (any, error) {
 		return checkCalls(pass, rules)
 	}
 }
 
-func checkCalls(pass *analysis.Pass, rules map[string]CallCheck) (interface{}, error) {
+func checkCalls(pass *analysis.Pass, rules map[string]CallCheck) (any, error) {
 	cb := func(caller *ir.Function, site ir.CallInstruction, callee *ir.Function) {
 		obj, ok := callee.Object().(*types.Func)
 		if !ok {
@@ -3183,7 +3183,7 @@ func shortCallName(call *ir.CallCommon) string {
 	return ""
 }
 
-func CheckWriterBufferModified(pass *analysis.Pass) (interface{}, error) {
+func CheckWriterBufferModified(pass *analysis.Pass) (any, error) {
 	// TODO(dh): this might be a good candidate for taint analysis.
 	// Taint the argument as MUST_NOT_MODIFY, then propagate that
 	// through functions like bytes.Split
@@ -3246,7 +3246,7 @@ func loopedRegexp(name string) CallCheck {
 	}
 }
 
-func CheckEmptyBranch(pass *analysis.Pass) (interface{}, error) {
+func CheckEmptyBranch(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		if fn.Source() == nil {
 			continue
@@ -3279,7 +3279,7 @@ func CheckEmptyBranch(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckMapBytesKey(pass *analysis.Pass) (interface{}, error) {
+func CheckMapBytesKey(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		for _, b := range fn.Blocks {
 		insLoop:
@@ -3331,11 +3331,11 @@ func CheckMapBytesKey(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckRangeStringRunes(pass *analysis.Pass) (interface{}, error) {
+func CheckRangeStringRunes(pass *analysis.Pass) (any, error) {
 	return sharedcheck.CheckRangeStringRunes(pass)
 }
 
-func CheckSelfAssignment(pass *analysis.Pass) (interface{}, error) {
+func CheckSelfAssignment(pass *analysis.Pass) (any, error) {
 	pure := pass.ResultOf[facts.Purity].(facts.PurityResult)
 
 	fn := func(node ast.Node) {
@@ -3381,7 +3381,7 @@ func buildTagsIdentical(s1, s2 []string) bool {
 	return true
 }
 
-func CheckDuplicateBuildConstraints(pass *analysis.Pass) (interface{}, error) {
+func CheckDuplicateBuildConstraints(pass *analysis.Pass) (any, error) {
 	for _, f := range pass.Files {
 		constraints := buildTags(f)
 		for i, constraint1 := range constraints {
@@ -3401,7 +3401,7 @@ func CheckDuplicateBuildConstraints(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckSillyRegexp(pass *analysis.Pass) (interface{}, error) {
+func CheckSillyRegexp(pass *analysis.Pass) (any, error) {
 	// We could use the rule checking engine for this, but the
 	// arguments aren't really invalid.
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
@@ -3433,7 +3433,7 @@ func CheckSillyRegexp(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckMissingEnumTypesInDeclaration(pass *analysis.Pass) (interface{}, error) {
+func CheckMissingEnumTypesInDeclaration(pass *analysis.Pass) (any, error) {
 	convertibleTo := func(V, T types.Type) bool {
 		if types.ConvertibleTo(V, T) {
 			return true
@@ -3509,7 +3509,7 @@ func CheckMissingEnumTypesInDeclaration(pass *analysis.Pass) (interface{}, error
 	return nil, nil
 }
 
-func CheckTimerResetReturnValue(pass *analysis.Pass) (interface{}, error) {
+func CheckTimerResetReturnValue(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		for _, block := range fn.Blocks {
 			for _, ins := range block.Instrs {
@@ -3581,7 +3581,7 @@ var (
 	checkToLowerToUpperComparisonR = pattern.MustParse(`(CallExpr (SelectorExpr (Ident "strings") (Ident "EqualFold")) [a b])`)
 )
 
-func CheckToLowerToUpperComparison(pass *analysis.Pass) (interface{}, error) {
+func CheckToLowerToUpperComparison(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		m, ok := code.Match(pass, checkToLowerToUpperComparisonQ, node)
 		if !ok {
@@ -3602,7 +3602,7 @@ func CheckToLowerToUpperComparison(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckUnreachableTypeCases(pass *analysis.Pass) (interface{}, error) {
+func CheckUnreachableTypeCases(pass *analysis.Pass) (any, error) {
 	// Check if T subsumes V in a type switch. T subsumes V if T is an interface and T's method set is a subset of V's method set.
 	subsumes := func(T, V types.Type) bool {
 		tIface, ok := T.Underlying().(*types.Interface)
@@ -3676,7 +3676,7 @@ func CheckUnreachableTypeCases(pass *analysis.Pass) (interface{}, error) {
 
 var checkSingleArgAppendQ = pattern.MustParse(`(CallExpr (Builtin "append") [_])`)
 
-func CheckSingleArgAppend(pass *analysis.Pass) (interface{}, error) {
+func CheckSingleArgAppend(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		_, ok := code.Match(pass, checkSingleArgAppendQ, node)
 		if !ok {
@@ -3688,7 +3688,7 @@ func CheckSingleArgAppend(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckStructTags(pass *analysis.Pass) (interface{}, error) {
+func CheckStructTags(pass *analysis.Pass) (any, error) {
 	importsGoFlags := false
 
 	// we use the AST instead of (*types.Package).Imports to work
@@ -3815,7 +3815,7 @@ func checkXMLTag(pass *analysis.Pass, field *ast.Field, tag string) {
 	}
 }
 
-func CheckImpossibleTypeAssertion(pass *analysis.Pass) (interface{}, error) {
+func CheckImpossibleTypeAssertion(pass *analysis.Pass) (any, error) {
 	type entry struct {
 		l, r *types.Func
 	}
@@ -3884,7 +3884,7 @@ func checkWithValueKey(call *Call) {
 	}
 }
 
-func CheckMaybeNil(pass *analysis.Pass) (interface{}, error) {
+func CheckMaybeNil(pass *analysis.Pass) (any, error) {
 	// This is an extremely trivial check that doesn't try to reason
 	// about control flow. That is, phis and sigmas do not propagate
 	// any information. As such, we can flag this:
@@ -3999,7 +3999,7 @@ var checkAddressIsNilQ = pattern.MustParse(
 		(Or "==" "!=")
 		(Builtin "nil"))`)
 
-func CheckAddressIsNil(pass *analysis.Pass) (interface{}, error) {
+func CheckAddressIsNil(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		_, ok := code.Match(pass, checkAddressIsNilQ, node)
 		if !ok {
@@ -4019,7 +4019,7 @@ var (
 	`)
 )
 
-func CheckStaticBitShift(pass *analysis.Pass) (interface{}, error) {
+func CheckStaticBitShift(pass *analysis.Pass) (any, error) {
 	isDubiousShift := func(x, y ast.Expr) (int64, int64, bool) {
 		typ, ok := pass.TypesInfo.TypeOf(x).Underlying().(*types.Basic)
 		if !ok {
@@ -4306,7 +4306,7 @@ func flagSliceLens(pass *analysis.Pass) {
 	}
 }
 
-func CheckEvenSliceLength(pass *analysis.Pass) (interface{}, error) {
+func CheckEvenSliceLength(pass *analysis.Pass) (any, error) {
 	findSliceLenChecks(pass)
 	findIndirectSliceLenChecks(pass)
 	flagSliceLens(pass)
@@ -4314,7 +4314,7 @@ func CheckEvenSliceLength(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckTypedNilInterface(pass *analysis.Pass) (interface{}, error) {
+func CheckTypedNilInterface(pass *analysis.Pass) (any, error) {
 	// The comparison 'fn() == nil' can never be true if fn() returns
 	// an interface value and only returns typed nils. This is usually
 	// a mistake in the function itself, but all we can say for
@@ -4430,7 +4430,7 @@ var builtinLessThanZeroQ = pattern.MustParse(`
 			(BasicLit "INT" "0")))
 `)
 
-func CheckBuiltinZeroComparison(pass *analysis.Pass) (interface{}, error) {
+func CheckBuiltinZeroComparison(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		matcher, ok := code.Match(pass, builtinLessThanZeroQ, node)
 		if !ok {
@@ -4447,7 +4447,7 @@ func CheckBuiltinZeroComparison(pass *analysis.Pass) (interface{}, error) {
 
 var integerDivisionQ = pattern.MustParse(`(BinaryExpr (BasicLit "INT" _) "/" (BasicLit "INT" _))`)
 
-func CheckIntegerDivisionEqualsZero(pass *analysis.Pass) (interface{}, error) {
+func CheckIntegerDivisionEqualsZero(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		_, ok := code.Match(pass, integerDivisionQ, node)
 		if !ok {
@@ -4477,7 +4477,7 @@ func CheckIntegerDivisionEqualsZero(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckIneffectiveFieldAssignments(pass *analysis.Pass) (interface{}, error) {
+func CheckIneffectiveFieldAssignments(pass *analysis.Pass) (any, error) {
 	// The analysis only considers the receiver and its first level
 	// fields. It doesn't look at other parameters, nor at nested
 	// fields.
@@ -4599,7 +4599,7 @@ var negativeZeroFloatQ = pattern.MustParse(`
 			conv@(Object (Or "float32" "float64"))
 			(UnaryExpr "-" lit@(BasicLit "INT" "0"))))`)
 
-func CheckNegativeZeroFloat(pass *analysis.Pass) (interface{}, error) {
+func CheckNegativeZeroFloat(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		m, ok := code.Match(pass, negativeZeroFloatQ, node)
 		if !ok {
@@ -4633,7 +4633,7 @@ func CheckNegativeZeroFloat(pass *analysis.Pass) (interface{}, error) {
 
 var ineffectiveURLQueryAddQ = pattern.MustParse(`(CallExpr (SelectorExpr (CallExpr (SelectorExpr recv (Ident "Query")) []) (Ident meth)) _)`)
 
-func CheckIneffectiveURLQueryModification(pass *analysis.Pass) (interface{}, error) {
+func CheckIneffectiveURLQueryModification(pass *analysis.Pass) (any, error) {
 	// TODO(dh): We could make this check more complex and detect
 	// pointless modifications of net/url.Values in general, but that
 	// requires us to get the state machine correct, else we'll cause

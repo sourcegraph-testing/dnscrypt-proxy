@@ -24,7 +24,7 @@ type tomlParser struct {
 type tomlParserStateFn func() tomlParserStateFn
 
 // Formats and panics an error message based on a token
-func (p *tomlParser) raiseError(tok *token, msg string, args ...interface{}) {
+func (p *tomlParser) raiseError(tok *token, msg string, args ...any) {
 	panic(tok.Position.String() + ": " + fmt.Sprintf(msg, args...))
 }
 
@@ -197,7 +197,7 @@ func (p *tomlParser) parseAssign() tomlParserStateFn {
 		p.raiseError(key, "The following key was defined twice: %s",
 			strings.Join(finalKey, "."))
 	}
-	var toInsert interface{}
+	var toInsert any
 
 	switch value.(type) {
 	case *Tree, []*Tree:
@@ -231,7 +231,7 @@ func cleanupNumberToken(value string) string {
 	return cleanedVal
 }
 
-func (p *tomlParser) parseRvalue() interface{} {
+func (p *tomlParser) parseRvalue() any {
 	tok := p.getToken()
 	if tok == nil || tok.typ == tokenEOF {
 		p.raiseError(tok, "expecting a value")
@@ -365,8 +365,8 @@ Loop:
 	return tree
 }
 
-func (p *tomlParser) parseArray() interface{} {
-	var array []interface{}
+func (p *tomlParser) parseArray() any {
+	var array []any
 	arrayType := reflect.TypeOf(nil)
 	for {
 		follow := p.peek()

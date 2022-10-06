@@ -171,7 +171,7 @@ func analyzersFromConfig(cfg *config.GovetSettings) []*analysis.Analyzer {
 }
 
 func NewGovet(cfg *config.GovetSettings) *goanalysis.Linter {
-	var settings map[string]map[string]interface{}
+	var settings map[string]map[string]any
 	if cfg != nil {
 		settings = cfg.Settings
 	}

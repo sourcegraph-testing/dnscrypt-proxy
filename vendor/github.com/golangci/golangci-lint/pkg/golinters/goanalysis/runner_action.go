@@ -49,7 +49,7 @@ type action struct {
 	deps                []*action
 	objectFacts         map[objectFactKey]analysis.Fact
 	packageFacts        map[packageFactKey]analysis.Fact
-	result              interface{}
+	result              any
 	diagnostics         []analysis.Diagnostic
 	err                 error
 	r                   *runner
@@ -137,7 +137,7 @@ func (act *action) analyze() {
 
 	// Plumb the output values of the dependencies
 	// into the inputs of this action.  Also facts.
-	inputs := make(map[*analysis.Analyzer]interface{})
+	inputs := make(map[*analysis.Analyzer]any)
 	startedAt := time.Now()
 	for _, dep := range act.deps {
 		if dep.pkg == act.pkg {

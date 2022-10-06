@@ -34,7 +34,7 @@ func NewUnparam() *goanalysis.Linter {
 			lintCtx.Log.Warnf("`linters-settings.unparam.algo` isn't supported by the newest `unparam`")
 		}
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			ssa := pass.ResultOf[buildssa.Analyzer].(*buildssa.SSA)
 			ssaPkg := ssa.Pkg
 

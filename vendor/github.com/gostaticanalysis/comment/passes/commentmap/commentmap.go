@@ -15,6 +15,6 @@ var Analyzer = &analysis.Analyzer{
 	ResultType:       reflect.TypeOf(comment.Maps{}),
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	return comment.New(pass.Fset, pass.Files), nil
 }

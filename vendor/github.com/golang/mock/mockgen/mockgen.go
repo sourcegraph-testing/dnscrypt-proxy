@@ -222,7 +222,7 @@ type generator struct {
 	packageMap map[string]string // map from import path to package name
 }
 
-func (g *generator) p(format string, args ...interface{}) {
+func (g *generator) p(format string, args ...any) {
 	fmt.Fprintf(&g.buf, g.indent+format+"\n", args...)
 }
 

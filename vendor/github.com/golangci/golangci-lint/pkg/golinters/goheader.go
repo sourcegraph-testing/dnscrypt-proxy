@@ -34,7 +34,7 @@ func NewGoHeader() *goanalysis.Linter {
 			Template:     cfg.Template,
 			TemplatePath: cfg.TemplatePath,
 		}
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			if c.TemplatePath == "" && c.Template == "" {
 				// User did not pass template, so then do not run go-header linter
 				return nil, nil

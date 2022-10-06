@@ -32,7 +32,7 @@ func NewAnalyzer() *analysis.Analyzer {
 	}
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	pssa := pass.ResultOf[buildssa.Analyzer].(*buildssa.SSA)
 
 	// Build list of types we are looking for

@@ -53,8 +53,8 @@ func NewAnalyzer(cfg WrapcheckConfig) *analysis.Analyzer {
 	}
 }
 
-func run(cfg WrapcheckConfig) func(*analysis.Pass) (interface{}, error) {
-	return func(pass *analysis.Pass) (interface{}, error) {
+func run(cfg WrapcheckConfig) func(*analysis.Pass) (any, error) {
+	return func(pass *analysis.Pass) (any, error) {
 		for _, file := range pass.Files {
 			ast.Inspect(file, func(n ast.Node) bool {
 				if _, ok := n.(*ast.AssignStmt); ok {

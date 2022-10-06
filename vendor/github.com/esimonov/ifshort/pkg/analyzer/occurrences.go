@@ -144,7 +144,7 @@ func (nom namedOccurrenceMap) addFromAssignment(pass *analysis.Pass, assignment 
 	}
 }
 
-func isUnshortenableAssignment(decl interface{}) bool {
+func isUnshortenableAssignment(decl any) bool {
 	assign, ok := decl.(*ast.AssignStmt)
 	if !ok {
 		return false

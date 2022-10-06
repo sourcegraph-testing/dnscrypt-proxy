@@ -90,9 +90,9 @@ var usage = func() {
 // A SourceFile represents a source code file and its coverage data for a
 // single job.
 type SourceFile struct {
-	Name     string        `json:"name"`     // File path of this source file
-	Source   string        `json:"source"`   // Full source code of this file
-	Coverage []interface{} `json:"coverage"` // Requires both nulls and integers
+	Name     string `json:"name"`     // File path of this source file
+	Source   string `json:"source"`   // Full source code of this file
+	Coverage []any  `json:"coverage"` // Requires both nulls and integers
 }
 
 // A Job represents the coverage data from a single run of a test suite.
@@ -406,8 +406,8 @@ func process() error {
 		number := githubEvent["number"].(float64)
 		pullRequest = strconv.Itoa(int(number))
 
-		ghPR := githubEvent["pull_request"].(map[string]interface{})
-		ghHead := ghPR["head"].(map[string]interface{})
+		ghPR := githubEvent["pull_request"].(map[string]any)
+		ghHead := ghPR["head"].(map[string]any)
 		head = ghHead["sha"].(string)
 	} else if prNumber := os.Getenv("CI_MERGE_REQUEST_IID"); prNumber != "" {
 		// pull request id from GitHub when building on GitLab
@@ -522,7 +522,7 @@ func process() error {
 	return nil
 }
 
-func getGithubEvent() map[string]interface{} {
+func getGithubEvent() map[string]any {
 	jsonFilePath := os.Getenv("GITHUB_EVENT_PATH")
 	if jsonFilePath == "" {
 		return nil
@@ -537,7 +537,7 @@ func getGithubEvent() map[string]interface{} {
 	jsonByte, _ := ioutil.ReadAll(jsonFile)
 
 	// unmarshal the json into a release event
-	var event map[string]interface{}
+	var event map[string]any
 	err = json.Unmarshal(jsonByte, &event)
 	if err != nil {
 		log.Fatal(err)

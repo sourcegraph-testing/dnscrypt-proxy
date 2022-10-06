@@ -55,7 +55,7 @@ var pureStdlib = map[string]struct{}{
 	"(*net/http.Request).WithContext": {},
 }
 
-func purity(pass *analysis.Pass) (interface{}, error) {
+func purity(pass *analysis.Pass) (any, error) {
 	seen := map[*ir.Function]struct{}{}
 	irpkg := pass.ResultOf[buildir.Analyzer].(*buildir.IR).Pkg
 	var check func(fn *ir.Function) (ret bool)

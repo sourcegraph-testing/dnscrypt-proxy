@@ -29,7 +29,7 @@ func NewForbidigo() *goanalysis.Linter {
 	).WithContextSetter(func(lintCtx *linter.Context) {
 		s := &lintCtx.Settings().Forbidigo
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var res []goanalysis.Issue
 			options := []forbidigo.Option{
 				forbidigo.OptionExcludeGodocExamples(s.ExcludeGodocExamples),

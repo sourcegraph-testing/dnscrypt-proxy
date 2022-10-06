@@ -33,7 +33,7 @@ func (r *filePermissions) ID() string {
 	return r.MetaData.ID
 }
 
-func getConfiguredMode(conf map[string]interface{}, configKey string, defaultMode int64) int64 {
+func getConfiguredMode(conf map[string]any, configKey string, defaultMode int64) int64 {
 	var mode = defaultMode
 	if value, ok := conf[configKey]; ok {
 		switch value := value.(type) {

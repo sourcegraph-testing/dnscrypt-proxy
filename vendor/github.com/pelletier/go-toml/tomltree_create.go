@@ -33,7 +33,7 @@ func typeFor(k reflect.Kind) reflect.Type {
 	return nil
 }
 
-func simpleValueCoercion(object interface{}) (interface{}, error) {
+func simpleValueCoercion(object any) (any, error) {
 	switch original := object.(type) {
 	case string, bool, int64, uint64, float64, time.Time:
 		return original, nil
@@ -62,7 +62,7 @@ func simpleValueCoercion(object interface{}) (interface{}, error) {
 	}
 }
 
-func sliceToTree(object interface{}) (interface{}, error) {
+func sliceToTree(object any) (any, error) {
 	// arrays are a bit tricky, since they can represent either a
 	// collection of simple values, which is represented by one
 	// *tomlValue, or an array of tables, which is represented by an
@@ -107,11 +107,11 @@ func sliceToTree(object interface{}) (interface{}, error) {
 	return &tomlValue{value: arrayValue.Interface(), position: Position{}}, nil
 }
 
-func toTree(object interface{}) (interface{}, error) {
+func toTree(object any) (any, error) {
 	value := reflect.ValueOf(object)
 
 	if value.Kind() == reflect.Map {
-		values := map[string]interface{}{}
+		values := map[string]any{}
 		keys := value.MapKeys()
 		for _, key := range keys {
 			if key.Kind() != reflect.String {

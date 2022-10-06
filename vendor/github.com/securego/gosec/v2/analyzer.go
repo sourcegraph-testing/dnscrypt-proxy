@@ -57,7 +57,7 @@ type Context struct {
 	Config       Config
 	Imports      *ImportTracker
 	Ignores      []map[string]bool
-	PassedValues map[string]interface{}
+	PassedValues map[string]any
 }
 
 // Metrics used when reporting information about a scanning run.
@@ -213,7 +213,7 @@ func (gosec *Analyzer) Check(pkg *packages.Package) {
 		gosec.context.PkgFiles = pkg.Syntax
 		gosec.context.Imports = NewImportTracker()
 		gosec.context.Imports.TrackFile(file)
-		gosec.context.PassedValues = make(map[string]interface{})
+		gosec.context.PassedValues = make(map[string]any)
 		ast.Walk(gosec, file)
 		gosec.stats.NumFiles++
 		gosec.stats.NumLines += pkg.Fset.File(file.Pos()).LineCount()

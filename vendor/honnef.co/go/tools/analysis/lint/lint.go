@@ -140,13 +140,13 @@ func (v *VersionFlag) Set(s string) error {
 	return nil
 }
 
-func (v *VersionFlag) Get() interface{} {
+func (v *VersionFlag) Get() any {
 	return int(*v)
 }
 
 // ExhaustiveTypeSwitch panics when called. It can be used to ensure
 // that type switches are exhaustive.
-func ExhaustiveTypeSwitch(v interface{}) {
+func ExhaustiveTypeSwitch(v any) {
 	panic(fmt.Sprintf("internal error: unhandled case %T", v))
 }
 

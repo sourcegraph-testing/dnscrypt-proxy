@@ -138,10 +138,10 @@ type fileParser struct {
 	srcDir string
 }
 
-func (p *fileParser) errorf(pos token.Pos, format string, args ...interface{}) error {
+func (p *fileParser) errorf(pos token.Pos, format string, args ...any) error {
 	ps := p.fileSet.Position(pos)
 	format = "%s:%d:%d: " + format
-	args = append([]interface{}{ps.Filename, ps.Line, ps.Column}, args...)
+	args = append([]any{ps.Filename, ps.Line, ps.Column}, args...)
 	return fmt.Errorf(format, args...)
 }
 

@@ -75,7 +75,7 @@ type PluginsState struct {
 	clientAddr                       *net.Addr
 	synthResponse                    *dns.Msg
 	questionMsg                      *dns.Msg
-	sessionData                      map[string]interface{}
+	sessionData                      map[string]any
 	action                           PluginsAction
 	timeout                          time.Duration
 	returnCode                       PluginsReturnCode
@@ -266,7 +266,7 @@ func NewPluginsState(
 		timeout:                          proxy.timeout,
 		requestStart:                     start,
 		maxUnencryptedUDPSafePayloadSize: MaxDNSUDPSafePacketSize,
-		sessionData:                      make(map[string]interface{}),
+		sessionData:                      make(map[string]any),
 	}
 }
 

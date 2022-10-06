@@ -30,7 +30,7 @@ func NewPrealloc() *goanalysis.Linter {
 	).WithContextSetter(func(lintCtx *linter.Context) {
 		s := &lintCtx.Settings().Prealloc
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var res []goanalysis.Issue
 			hints := pkg.Check(pass.Files, s.Simple, s.RangeLoops, s.ForLoops)
 			for _, hint := range hints {

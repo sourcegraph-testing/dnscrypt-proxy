@@ -8,7 +8,7 @@ import (
 	"golang.org/x/tools/go/analysis/passes/buildssa"
 )
 
-func Run(pass *analysis.Pass) (interface{}, error) {
+func Run(pass *analysis.Pass) (any, error) {
 	ngFuncNames := []string{
 		"net/http.Get",
 		"net/http.Head",

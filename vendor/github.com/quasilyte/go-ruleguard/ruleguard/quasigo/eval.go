@@ -11,7 +11,7 @@ const maxFuncLocals = 8
 //
 // Note that it returns the popped elements in the reverse order
 // to make it easier to map the order in which they were pushed.
-func (s *ValueStack) pop2() (second, top interface{}) {
+func (s *ValueStack) pop2() (second, top any) {
 	x := s.objects[len(s.objects)-2]
 	y := s.objects[len(s.objects)-1]
 	s.objects = s.objects[:len(s.objects)-2]
@@ -26,7 +26,7 @@ func (s *ValueStack) popInt2() (second, top int) {
 }
 
 // top returns top of the stack without popping it.
-func (s *ValueStack) top() interface{} { return s.objects[len(s.objects)-1] }
+func (s *ValueStack) top() any { return s.objects[len(s.objects)-1] }
 
 func (s *ValueStack) topInt() int { return s.ints[len(s.ints)-1] }
 
@@ -38,11 +38,11 @@ func (s *ValueStack) dup() { s.objects = append(s.objects, s.objects[len(s.objec
 // Identical to s.Pop() without using the result.
 func (s *ValueStack) discard() { s.objects = s.objects[:len(s.objects)-1] }
 
-func eval(env *EvalEnv, fn *Func, args []interface{}) CallResult {
+func eval(env *EvalEnv, fn *Func, args []any) CallResult {
 	pc := 0
 	code := fn.code
 	stack := env.stack
-	var locals [maxFuncLocals]interface{}
+	var locals [maxFuncLocals]any
 	var intLocals [maxFuncLocals]int
 
 	for {

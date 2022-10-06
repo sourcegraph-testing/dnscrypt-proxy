@@ -428,7 +428,7 @@ func (c *badRegexpChecker) isGoodAnchor(e syntax.Expr) bool {
 	return false
 }
 
-func (c *badRegexpChecker) warn(format string, args ...interface{}) {
+func (c *badRegexpChecker) warn(format string, args ...any) {
 	c.ctx.Warn(c.cause, format, args...)
 }
 

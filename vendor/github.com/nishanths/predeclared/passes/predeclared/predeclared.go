@@ -34,7 +34,7 @@ var Analyzer = &analysis.Analyzer{
 	Run:  run,
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	cfg := newConfig(fIgnore, fQualified)
 	for _, file := range pass.Files {
 		processFile(pass.Report, cfg, pass.Fset, file)

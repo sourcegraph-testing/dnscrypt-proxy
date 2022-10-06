@@ -133,7 +133,7 @@ func isInContainer(cgroupPath string) (bool, error) {
 	return false, nil
 }
 
-var tf = map[string]interface{}{
+var tf = map[string]any{
 	"cmd": func(s string) string {
 		return `"` + strings.Replace(s, `"`, `\"`, -1) + `"`
 	},

@@ -106,7 +106,7 @@ func (p *printer) collectComments(node ast.Node) {
 }
 
 // output prints creates b printable HCL output and returns it.
-func (p *printer) output(n interface{}) []byte {
+func (p *printer) output(n any) []byte {
 	var buf bytes.Buffer
 
 	switch t := n.(type) {
@@ -721,10 +721,9 @@ func (p *printer) heredocIndent(buf []byte) []byte {
 //
 // A single line object:
 //
-//   * has no lead comments (hence multi-line)
-//   * has no assignment
-//   * has no values in the stanza (within {})
-//
+//   - has no lead comments (hence multi-line)
+//   - has no assignment
+//   - has no values in the stanza (within {})
 func (p *printer) isSingleLineObject(val *ast.ObjectItem) bool {
 	// If there is a lead comment, can't be one line
 	if val.LeadComment != nil {
@@ -759,7 +758,7 @@ func lines(txt string) int {
 // ----------------------------------------------------------------------------
 // Tracing support
 
-func (p *printer) printTrace(a ...interface{}) {
+func (p *printer) printTrace(a ...any) {
 	if !p.enableTrace {
 		return
 	}

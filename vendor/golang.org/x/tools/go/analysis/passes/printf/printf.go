@@ -133,7 +133,7 @@ func (f *isWrapper) String() string {
 	}
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	res := &Result{
 		funcs: make(map[*types.Func]Kind),
 	}
@@ -206,7 +206,7 @@ func maybePrintfWrapper(info *types.Info, decl ast.Decl) *printfWrapper {
 }
 
 // findPrintfLike scans the entire package to find printf-like functions.
-func findPrintfLike(pass *analysis.Pass, res *Result) (interface{}, error) {
+func findPrintfLike(pass *analysis.Pass, res *Result) (any, error) {
 	// Gather potential wrappers and call graph between them.
 	byObj := make(map[*types.Func]*printfWrapper)
 	var wrappers []*printfWrapper
@@ -342,7 +342,6 @@ func checkPrintfFwd(pass *analysis.Pass, w *printfWrapper, call *ast.CallExpr, k
 // not do so with gccgo, and nor do some other build systems.
 // TODO(adonovan): eliminate the redundant facts once this restriction
 // is lifted.
-//
 var isPrint = stringSet{
 	"fmt.Errorf":   true,
 	"fmt.Fprint":   true,
@@ -931,9 +930,9 @@ func okPrintfArg(pass *analysis.Pass, call *ast.CallExpr, state *formatState) (o
 // recursiveStringer reports whether the argument e is a potential
 // recursive call to stringer or is an error, such as t and &t in these examples:
 //
-// 	func (t *T) String() string { printf("%s",  t) }
-// 	func (t  T) Error() string { printf("%s",  t) }
-// 	func (t  T) String() string { printf("%s", &t) }
+//	func (t *T) String() string { printf("%s",  t) }
+//	func (t  T) Error() string { printf("%s",  t) }
+//	func (t  T) String() string { printf("%s", &t) }
 func recursiveStringer(pass *analysis.Pass, e ast.Expr) (string, bool) {
 	typ := pass.TypesInfo.Types[e].Type
 

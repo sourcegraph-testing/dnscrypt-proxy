@@ -18,7 +18,7 @@ var Analyzer = &analysis.Analyzer{
 
 const Doc = "noctx finds sending http request without context.Context"
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	if _, err := ngfunc.Run(pass); err != nil {
 		return nil, err
 	}

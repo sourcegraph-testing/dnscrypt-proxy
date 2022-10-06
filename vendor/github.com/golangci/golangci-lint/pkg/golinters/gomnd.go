@@ -13,7 +13,7 @@ func NewGoMND(cfg *config.Config) *goanalysis.Linter {
 		mnd.Analyzer,
 	}
 
-	var linterCfg map[string]map[string]interface{}
+	var linterCfg map[string]map[string]any
 	if cfg != nil {
 		linterCfg = cfg.LintersSettings.Gomnd.Settings
 	}

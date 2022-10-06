@@ -49,7 +49,7 @@ func NewErrcheck() *goanalysis.Linter {
 
 		checker.Tags = lintCtx.Cfg.Run.BuildTags
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			pkg := &packages.Package{
 				Fset:      pass.Fset,
 				Syntax:    pass.Files,

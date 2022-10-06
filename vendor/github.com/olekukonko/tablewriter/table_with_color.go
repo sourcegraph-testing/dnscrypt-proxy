@@ -80,7 +80,7 @@ func makeSequence(codes []int) string {
 }
 
 // Adding ANSI escape  sequences before and after string
-func format(s string, codes interface{}) string {
+func format(s string, codes any) string {
 	var seq string
 
 	switch v := codes.(type) {

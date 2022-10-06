@@ -15,7 +15,7 @@ import (
 
 type PluginBlockIP struct {
 	blockedPrefixes *iradix.Tree
-	blockedIPs      map[string]interface{}
+	blockedIPs      map[string]any
 	logger          io.Writer
 	format          string
 }
@@ -35,7 +35,7 @@ func (plugin *PluginBlockIP) Init(proxy *Proxy) error {
 		return err
 	}
 	plugin.blockedPrefixes = iradix.New()
-	plugin.blockedIPs = make(map[string]interface{})
+	plugin.blockedIPs = make(map[string]any)
 	for lineNo, line := range strings.Split(string(bin), "\n") {
 		line = TrimAndStripInlineComments(line)
 		if len(line) == 0 {

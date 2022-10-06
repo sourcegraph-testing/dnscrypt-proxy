@@ -495,7 +495,7 @@ func (r *HunksReader) ReadHunk() (*Hunk, error) {
 
 			// Parse hunk header.
 			r.hunk = &Hunk{}
-			items := []interface{}{
+			items := []any{
 				&r.hunk.OrigStartLine, &r.hunk.OrigLines,
 				&r.hunk.NewStartLine, &r.hunk.NewLines,
 			}

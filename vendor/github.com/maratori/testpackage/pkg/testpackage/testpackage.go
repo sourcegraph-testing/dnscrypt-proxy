@@ -27,7 +27,7 @@ func NewAnalyzer() *analysis.Analyzer {
 		Name:  "testpackage",
 		Doc:   "linter that makes you use a separate _test package",
 		Flags: fs,
-		Run: func(pass *analysis.Pass) (interface{}, error) {
+		Run: func(pass *analysis.Pass) (any, error) {
 			skipFile, err := regexp.Compile(skipFileRegexp)
 			if err != nil {
 				return nil, err

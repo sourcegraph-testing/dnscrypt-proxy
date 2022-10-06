@@ -58,7 +58,7 @@ func NewGolint() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			res, err := golintProcessPkg(lintCtx.Settings().Golint.MinConfidence, pass.Files, pass.Fset, pass.Pkg, pass.TypesInfo)
 			if err != nil || len(res) == 0 {
 				return nil, err

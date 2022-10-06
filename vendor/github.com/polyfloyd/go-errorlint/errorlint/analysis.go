@@ -29,7 +29,7 @@ func init() {
 	flagSet.BoolVar(&checkErrorf, "errorf", false, "Check whether fmt.Errorf uses the %w verb for formatting errors. See the readme for caveats")
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	lints := []Lint{}
 	if checkComparison {
 		l := LintErrorComparisons(pass.Fset, *pass.TypesInfo)

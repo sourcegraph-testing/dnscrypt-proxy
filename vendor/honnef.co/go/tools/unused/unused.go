@@ -499,13 +499,13 @@ func serializeObject(pass *analysis.Pass, fset *token.FileSet, obj types.Object)
 	}
 }
 
-func debugf(f string, v ...interface{}) {
+func debugf(f string, v ...any) {
 	if Debug != nil {
 		fmt.Fprintf(Debug, f, v...)
 	}
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	irpkg := pass.ResultOf[buildir.Analyzer].(*buildir.IR)
 	dirs := pass.ResultOf[facts.Directives].([]lint.Directive)
 	pkg := &pkg{
@@ -548,7 +548,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		for _, v := range g.Nodes {
 			debugNode(v)
 		}
-		g.TypeNodes.Iterate(func(key types.Type, value interface{}) {
+		g.TypeNodes.Iterate(func(key types.Type, value any) {
 			debugNode(value.(*node))
 		})
 
@@ -560,7 +560,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 func results(g *graph) (used, unused []types.Object) {
 	g.color(g.Root)
-	g.TypeNodes.Iterate(func(_ types.Type, value interface{}) {
+	g.TypeNodes.Iterate(func(_ types.Type, value any) {
 		node := value.(*node)
 		if node.seen {
 			return
@@ -619,7 +619,7 @@ type graph struct {
 	seenTypes typemap.Map
 
 	TypeNodes typemap.Map
-	Nodes     map[interface{}]*node
+	Nodes     map[any]*node
 
 	// context
 	pkg         *pkg
@@ -629,7 +629,7 @@ type graph struct {
 
 func newGraph() *graph {
 	g := &graph{
-		Nodes:   map[interface{}]*node{},
+		Nodes:   map[any]*node{},
 		seenFns: map[*ir.Function]struct{}{},
 	}
 	g.Root = g.newNode(nil)
@@ -659,7 +659,7 @@ type edge struct {
 }
 
 type node struct {
-	obj interface{}
+	obj any
 	id  uint64
 
 	// OPT(dh): evaluate using a map instead of a slice to avoid
@@ -678,7 +678,7 @@ func (g *graph) nodeMaybe(obj types.Object) (*node, bool) {
 	return nil, false
 }
 
-func (g *graph) node(obj interface{}) (n *node, new bool) {
+func (g *graph) node(obj any) (n *node, new bool) {
 	switch obj := obj.(type) {
 	case types.Type:
 		if v := g.TypeNodes.At(obj); v != nil {
@@ -707,7 +707,7 @@ func (g *graph) node(obj interface{}) (n *node, new bool) {
 	}
 }
 
-func (g *graph) newNode(obj interface{}) *node {
+func (g *graph) newNode(obj any) *node {
 	g.nodeCounter++
 	return &node{
 		obj: obj,
@@ -728,7 +728,7 @@ func (n *node) use(n2 *node, kind edgeKind) {
 // Dropping these objects should have no effect on correctness, but
 // may improve performance. It also helps with debugging, as it
 // greatly reduces the size of the graph.
-func isIrrelevant(obj interface{}) bool {
+func isIrrelevant(obj any) bool {
 	if obj, ok := obj.(types.Object); ok {
 		switch obj := obj.(type) {
 		case *types.Var:
@@ -792,7 +792,7 @@ func isIrrelevant(obj interface{}) bool {
 	return false
 }
 
-func (g *graph) see(obj interface{}) *node {
+func (g *graph) see(obj any) *node {
 	if isIrrelevant(obj) {
 		return nil
 	}
@@ -803,7 +803,7 @@ func (g *graph) see(obj interface{}) *node {
 	return node
 }
 
-func (g *graph) use(used, by interface{}, kind edgeKind) {
+func (g *graph) use(used, by any, kind edgeKind) {
 	if isIrrelevant(used) {
 		return
 	}
@@ -825,7 +825,7 @@ func (g *graph) use(used, by interface{}, kind edgeKind) {
 	}
 }
 
-func (g *graph) seeAndUse(used, by interface{}, kind edgeKind) *node {
+func (g *graph) seeAndUse(used, by any, kind edgeKind) *node {
 	n := g.see(used)
 	g.use(used, by, kind)
 	return n
@@ -1125,7 +1125,7 @@ func (g *graph) entry(pkg *pkg) {
 	var ifaces []*types.Interface
 	var notIfaces []types.Type
 
-	g.seenTypes.Iterate(func(t types.Type, _ interface{}) {
+	g.seenTypes.Iterate(func(t types.Type, _ any) {
 		switch t := t.(type) {
 		case *types.Interface:
 			// OPT(dh): (8.1) we only need interfaces that have unexported methods
@@ -1223,7 +1223,7 @@ func (g *graph) entry(pkg *pkg) {
 	}
 }
 
-func (g *graph) useMethod(t types.Type, sel *types.Selection, by interface{}, kind edgeKind) {
+func (g *graph) useMethod(t types.Type, sel *types.Selection, by any, kind edgeKind) {
 	obj := sel.Obj()
 	path := sel.Index()
 	assert(obj != nil)
@@ -1435,7 +1435,7 @@ func (g *graph) variable(v *types.Var) {
 }
 
 func (g *graph) signature(sig *types.Signature, fn types.Object) {
-	var user interface{} = fn
+	var user any = fn
 	if fn == nil {
 		user = sig
 		g.see(sig)

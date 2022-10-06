@@ -13,7 +13,7 @@ func (e compileError) Error() string { return string(e) }
 type compiler struct {
 	prog          *program
 	stringIndexes map[string]uint8
-	ifaceIndexes  map[interface{}]uint8
+	ifaceIndexes  map[any]uint8
 	strict        bool
 	fset          *token.FileSet
 }
@@ -40,7 +40,7 @@ func (c *compiler) Compile(fset *token.FileSet, root ast.Node, strict bool) (p *
 		insts: make([]instruction, 0, 8),
 	}
 	c.stringIndexes = make(map[string]uint8)
-	c.ifaceIndexes = make(map[interface{}]uint8)
+	c.ifaceIndexes = make(map[any]uint8)
 
 	c.compileNode(root)
 
@@ -51,7 +51,7 @@ func (c *compiler) Compile(fset *token.FileSet, root ast.Node, strict bool) (p *
 	return c.prog, nil
 }
 
-func (c *compiler) errorf(n ast.Node, format string, args ...interface{}) compileError {
+func (c *compiler) errorf(n ast.Node, format string, args ...any) compileError {
 	loc := c.fset.Position(n.Pos())
 	message := fmt.Sprintf("%s:%d: %s", loc.Filename, loc.Line, fmt.Sprintf(format, args...))
 	return compileError(message)
@@ -77,7 +77,7 @@ func (c *compiler) internString(n ast.Node, s string) uint8 {
 	return uint8(index)
 }
 
-func (c *compiler) internIface(n ast.Node, v interface{}) uint8 {
+func (c *compiler) internIface(n ast.Node, v any) uint8 {
 	if index, ok := c.ifaceIndexes[v]; ok {
 		return index
 	}

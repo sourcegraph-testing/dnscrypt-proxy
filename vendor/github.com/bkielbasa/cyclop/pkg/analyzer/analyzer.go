@@ -32,7 +32,7 @@ func init() {
 	flagSet.BoolVar(&skipTests, "skipTests", false, "should the linter execute on test files as well")
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	var sum, count float64
 	var pkgName string
 	var pkgPos token.Pos

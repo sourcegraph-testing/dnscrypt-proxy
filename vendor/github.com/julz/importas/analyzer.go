@@ -26,11 +26,11 @@ var Analyzer = &analysis.Analyzer{
 	Requires: []*analysis.Analyzer{inspect.Analyzer},
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	return runWithConfig(config, pass)
 }
 
-func runWithConfig(config *Config, pass *analysis.Pass) (interface{}, error) {
+func runWithConfig(config *Config, pass *analysis.Pass) (any, error) {
 	if err := config.CompileRegexp(); err != nil {
 		return nil, err
 	}

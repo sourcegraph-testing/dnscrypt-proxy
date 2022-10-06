@@ -27,7 +27,7 @@ var (
 	}()
 )
 
-type GocriticCheckSettings map[string]interface{}
+type GocriticCheckSettings map[string]any
 
 type GocriticSettings struct {
 	EnabledChecks    []string                         `mapstructure:"enabled-checks"`
@@ -39,7 +39,7 @@ type GocriticSettings struct {
 	inferredEnabledChecks map[string]bool
 }
 
-func debugChecksListf(checks []string, format string, args ...interface{}) {
+func debugChecksListf(checks []string, format string, args ...any) {
 	if isGocriticDebug {
 		prefix := fmt.Sprintf(format, args...)
 		gocriticDebugf(prefix+" checks (%d): %s", len(checks), sprintStrings(checks))

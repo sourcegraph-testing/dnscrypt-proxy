@@ -90,7 +90,7 @@ import (
 // is checked to detect whether the address has already been visited.
 // If there is a cycle, then the pointed at values are considered equal
 // only if both addresses were previously visited in the same path step.
-func Equal(x, y interface{}, opts ...Option) bool {
+func Equal(x, y any, opts ...Option) bool {
 	s := newState(opts)
 	s.compareAny(rootStep(x, y))
 	return s.result.Equal()
@@ -110,7 +110,7 @@ func Equal(x, y interface{}, opts ...Option) bool {
 //
 // Do not depend on this output being stable. If you need the ability to
 // programmatically interpret the difference, consider using a custom Reporter.
-func Diff(x, y interface{}, opts ...Option) string {
+func Diff(x, y any, opts ...Option) string {
 	s := newState(opts)
 
 	// Optimization: If there are no other reporters, we can optimize for the
@@ -136,7 +136,7 @@ func Diff(x, y interface{}, opts ...Option) string {
 
 // rootStep constructs the first path step. If x and y have differing types,
 // then they are stored within an empty interface type.
-func rootStep(x, y interface{}) PathStep {
+func rootStep(x, y any) PathStep {
 	vx := reflect.ValueOf(x)
 	vy := reflect.ValueOf(y)
 
@@ -144,7 +144,7 @@ func rootStep(x, y interface{}) PathStep {
 	// so that they have the same parent type.
 	var t reflect.Type
 	if !vx.IsValid() || !vy.IsValid() || vx.Type() != vy.Type() {
-		t = reflect.TypeOf((*interface{})(nil)).Elem()
+		t = reflect.TypeOf((*any)(nil)).Elem()
 		if vx.IsValid() {
 			vvx := reflect.New(t).Elem()
 			vvx.Set(vx)
@@ -639,7 +639,9 @@ type dynChecker struct{ curr, next int }
 // Next increments the state and reports whether a check should be performed.
 //
 // Checks occur every Nth function call, where N is a triangular number:
+//
 //	0 1 3 6 10 15 21 28 36 45 55 66 78 91 105 120 136 153 171 190 ...
+//
 // See https://en.wikipedia.org/wiki/Triangular_number
 //
 // This sequence ensures that the cost of checks drops significantly as

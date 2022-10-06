@@ -26,16 +26,16 @@ type PatternMatcher struct {
 	blockedSuffixes   *critbitgo.Trie
 	blockedSubstrings []string
 	blockedPatterns   []string
-	blockedExact      map[string]interface{}
-	indirectVals      map[string]interface{}
+	blockedExact      map[string]any
+	indirectVals      map[string]any
 }
 
 func NewPatternMatcher() *PatternMatcher {
 	patternMatcher := PatternMatcher{
 		blockedPrefixes: critbitgo.NewTrie(),
 		blockedSuffixes: critbitgo.NewTrie(),
-		blockedExact:    make(map[string]interface{}),
-		indirectVals:    make(map[string]interface{}),
+		blockedExact:    make(map[string]any),
+		indirectVals:    make(map[string]any),
 	}
 	return &patternMatcher
 }
@@ -51,7 +51,7 @@ func isGlobCandidate(str string) bool {
 	return false
 }
 
-func (patternMatcher *PatternMatcher) Add(pattern string, val interface{}, position int) error {
+func (patternMatcher *PatternMatcher) Add(pattern string, val any, position int) error {
 	leadingStar := strings.HasPrefix(pattern, "*")
 	trailingStar := strings.HasSuffix(pattern, "*")
 	exact := strings.HasPrefix(pattern, "=")
@@ -115,7 +115,7 @@ func (patternMatcher *PatternMatcher) Add(pattern string, val interface{}, posit
 	return nil
 }
 
-func (patternMatcher *PatternMatcher) Eval(qName string) (reject bool, reason string, val interface{}) {
+func (patternMatcher *PatternMatcher) Eval(qName string) (reject bool, reason string, val any) {
 	if len(qName) < 2 {
 		return false, "", nil
 	}

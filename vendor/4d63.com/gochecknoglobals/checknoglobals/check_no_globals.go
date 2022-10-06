@@ -96,7 +96,7 @@ func looksLikeError(i *ast.Ident) bool {
 	return strings.HasPrefix(i.Name, prefix)
 }
 
-func checkNoGlobals(pass *analysis.Pass) (interface{}, error) {
+func checkNoGlobals(pass *analysis.Pass) (any, error) {
 	includeTests := pass.Analyzer.Flags.Lookup("t").Value.(flag.Getter).Get().(bool)
 
 	for _, file := range pass.Files {

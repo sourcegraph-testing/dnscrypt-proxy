@@ -16,7 +16,7 @@ type Net struct {
 
 // Add a route.
 // If `r` is not IPv4/IPv6 network, returns an error.
-func (n *Net) Add(r *net.IPNet, value interface{}) (err error) {
+func (n *Net) Add(r *net.IPNet, value any) (err error) {
 	var ip net.IP
 	if ip, _, err = netValidateIPNet(r); err == nil {
 		n.trie.Set(netIPNetToKey(ip, r.Mask), value)
@@ -26,7 +26,7 @@ func (n *Net) Add(r *net.IPNet, value interface{}) (err error) {
 
 // Add a route.
 // If `s` is not CIDR notation, returns an error.
-func (n *Net) AddCIDR(s string, value interface{}) (err error) {
+func (n *Net) AddCIDR(s string, value any) (err error) {
 	var r *net.IPNet
 	if _, r, err = net.ParseCIDR(s); err == nil {
 		n.Add(r, value)
@@ -36,7 +36,7 @@ func (n *Net) AddCIDR(s string, value interface{}) (err error) {
 
 // Delete a specific route.
 // If `r` is not IP4/IPv6 network or a route is not found, `ok` is false.
-func (n *Net) Delete(r *net.IPNet) (value interface{}, ok bool, err error) {
+func (n *Net) Delete(r *net.IPNet) (value any, ok bool, err error) {
 	var ip net.IP
 	if ip, _, err = netValidateIPNet(r); err == nil {
 		value, ok = n.trie.Delete(netIPNetToKey(ip, r.Mask))
@@ -46,7 +46,7 @@ func (n *Net) Delete(r *net.IPNet) (value interface{}, ok bool, err error) {
 
 // Delete a specific route.
 // If `s` is not CIDR notation or a route is not found, `ok` is false.
-func (n *Net) DeleteCIDR(s string) (value interface{}, ok bool, err error) {
+func (n *Net) DeleteCIDR(s string) (value any, ok bool, err error) {
 	var r *net.IPNet
 	if _, r, err = net.ParseCIDR(s); err == nil {
 		value, ok, err = n.Delete(r)
@@ -56,7 +56,7 @@ func (n *Net) DeleteCIDR(s string) (value interface{}, ok bool, err error) {
 
 // Get a specific route.
 // If `r` is not IPv4/IPv6 network or a route is not found, `ok` is false.
-func (n *Net) Get(r *net.IPNet) (value interface{}, ok bool, err error) {
+func (n *Net) Get(r *net.IPNet) (value any, ok bool, err error) {
 	var ip net.IP
 	if ip, _, err = netValidateIPNet(r); err == nil {
 		value, ok = n.trie.Get(netIPNetToKey(ip, r.Mask))
@@ -66,7 +66,7 @@ func (n *Net) Get(r *net.IPNet) (value interface{}, ok bool, err error) {
 
 // Get a specific route.
 // If `s` is not CIDR notation or a route is not found, `ok` is false.
-func (n *Net) GetCIDR(s string) (value interface{}, ok bool, err error) {
+func (n *Net) GetCIDR(s string) (value any, ok bool, err error) {
 	var r *net.IPNet
 	if _, r, err = net.ParseCIDR(s); err == nil {
 		value, ok, err = n.Get(r)
@@ -76,7 +76,7 @@ func (n *Net) GetCIDR(s string) (value interface{}, ok bool, err error) {
 
 // Return a specific route by using the longest prefix matching.
 // If `r` is not IPv4/IPv6 network or a route is not found, `route` is nil.
-func (n *Net) Match(r *net.IPNet) (route *net.IPNet, value interface{}, err error) {
+func (n *Net) Match(r *net.IPNet) (route *net.IPNet, value any, err error) {
 	var ip net.IP
 	if ip, _, err = netValidateIP(r.IP); err == nil {
 		if k, v := n.match(netIPNetToKey(ip, r.Mask)); k != nil {
@@ -89,7 +89,7 @@ func (n *Net) Match(r *net.IPNet) (route *net.IPNet, value interface{}, err erro
 
 // Return a specific route by using the longest prefix matching.
 // If `s` is not CIDR notation, or a route is not found, `route` is nil.
-func (n *Net) MatchCIDR(s string) (route *net.IPNet, value interface{}, err error) {
+func (n *Net) MatchCIDR(s string) (route *net.IPNet, value any, err error) {
 	var r *net.IPNet
 	if _, r, err = net.ParseCIDR(s); err == nil {
 		route, value, err = n.Match(r)
@@ -106,7 +106,7 @@ func (n *Net) ContainedIP(ip net.IP) (contained bool, err error) {
 
 // Return a specific route by using the longest prefix matching.
 // If `ip` is invalid IP, or a route is not found, `route` is nil.
-func (n *Net) MatchIP(ip net.IP) (route *net.IPNet, value interface{}, err error) {
+func (n *Net) MatchIP(ip net.IP) (route *net.IPNet, value any, err error) {
 	k, v, err := n.matchIP(ip)
 	if k != nil {
 		route = netKeyToIPNet(k)
@@ -115,7 +115,7 @@ func (n *Net) MatchIP(ip net.IP) (route *net.IPNet, value interface{}, err error
 	return
 }
 
-func (n *Net) matchIP(ip net.IP) (k []byte, v interface{}, err error) {
+func (n *Net) matchIP(ip net.IP) (k []byte, v any, err error) {
 	var isV4 bool
 	ip, isV4, err = netValidateIP(ip)
 	if err != nil {
@@ -131,7 +131,7 @@ func (n *Net) matchIP(ip net.IP) (k []byte, v interface{}, err error) {
 	return
 }
 
-func (n *Net) match(key []byte) ([]byte, interface{}) {
+func (n *Net) match(key []byte) ([]byte, any) {
 	if n.trie.size > 0 {
 		if node := lookup(&n.trie.root, key, false); node != nil {
 			return node.external.key, node.external.value
@@ -191,21 +191,21 @@ func lookup(p *node, key []byte, backtracking bool) *node {
 
 // Walk iterates routes from a given route.
 // handle is called with arguments route and value (if handle returns `false`, the iteration is aborted)
-func (n *Net) Walk(r *net.IPNet, handle func(*net.IPNet, interface{}) bool) {
+func (n *Net) Walk(r *net.IPNet, handle func(*net.IPNet, any) bool) {
 	var key []byte
 	if r != nil {
 		if ip, _, err := netValidateIPNet(r); err == nil {
 			key = netIPNetToKey(ip, r.Mask)
 		}
 	}
-	n.trie.Walk(key, func(key []byte, value interface{}) bool {
+	n.trie.Walk(key, func(key []byte, value any) bool {
 		return handle(netKeyToIPNet(key), value)
 	})
 }
 
 // WalkPrefix interates routes that have a given prefix.
 // handle is called with arguments route and value (if handle returns `false`, the iteration is aborted)
-func (n *Net) WalkPrefix(r *net.IPNet, handle func(*net.IPNet, interface{}) bool) {
+func (n *Net) WalkPrefix(r *net.IPNet, handle func(*net.IPNet, any) bool) {
 	var prefix []byte
 	var div int
 	var bit uint
@@ -219,7 +219,7 @@ func (n *Net) WalkPrefix(r *net.IPNet, handle func(*net.IPNet, interface{}) bool
 			}
 		}
 	}
-	wrapper := func(key []byte, value interface{}) bool {
+	wrapper := func(key []byte, value any) bool {
 		if bit != 0 {
 			if prefix[div]>>bit != key[div]>>bit {
 				return false
@@ -230,7 +230,7 @@ func (n *Net) WalkPrefix(r *net.IPNet, handle func(*net.IPNet, interface{}) bool
 	n.trie.Allprefixed(prefix[0:div], wrapper)
 }
 
-func walkMatch(p *node, key []byte, handle func(*net.IPNet, interface{}) bool) bool {
+func walkMatch(p *node, key []byte, handle func(*net.IPNet, any) bool) bool {
 	if p.internal != nil {
 		if !walkMatch(&p.internal.child[0], key, handle) {
 			return false
@@ -265,7 +265,7 @@ func walkMatch(p *node, key []byte, handle func(*net.IPNet, interface{}) bool) b
 
 // WalkMatch interates routes that match a given route.
 // handle is called with arguments route and value (if handle returns `false`, the iteration is aborted)
-func (n *Net) WalkMatch(r *net.IPNet, handle func(*net.IPNet, interface{}) bool) {
+func (n *Net) WalkMatch(r *net.IPNet, handle func(*net.IPNet, any) bool) {
 	if n.trie.size > 0 {
 		walkMatch(&n.trie.root, netIPNetToKey(r.IP, r.Mask), handle)
 	}

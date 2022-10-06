@@ -250,7 +250,7 @@ type GoLintSettings struct {
 }
 
 type GoMndSettings struct {
-	Settings map[string]map[string]interface{}
+	Settings map[string]map[string]any
 }
 
 type GoModDirectivesSettings struct {
@@ -281,12 +281,12 @@ type GoModGuardSettings struct {
 type GoSecSettings struct {
 	Includes []string
 	Excludes []string
-	Config   map[string]interface{} `mapstructure:"config"`
+	Config   map[string]any `mapstructure:"config"`
 }
 
 type GovetSettings struct {
 	CheckShadowing bool `mapstructure:"check-shadowing"`
-	Settings       map[string]map[string]interface{}
+	Settings       map[string]map[string]any
 
 	Enable     []string
 	Disable    []string
@@ -378,7 +378,7 @@ type ReviveSettings struct {
 	Severity              string
 	Rules                 []struct {
 		Name      string
-		Arguments []interface{}
+		Arguments []any
 		Severity  string
 		Disabled  bool
 	}

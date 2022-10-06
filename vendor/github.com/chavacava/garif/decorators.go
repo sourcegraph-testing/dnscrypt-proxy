@@ -26,7 +26,7 @@ func (l *Location) WithURI(uri string) *Location {
 }
 
 // WithKeyValue sets (overwrites) the value of the given key
-func (b PropertyBag) WithKeyValue(key string, value interface{}) PropertyBag {
+func (b PropertyBag) WithKeyValue(key string, value any) PropertyBag {
 	b[key] = value
 	return b
 }
@@ -38,7 +38,7 @@ func (r *ReportingDescriptor) WithHelpUri(uri string) *ReportingDescriptor {
 }
 
 // WithProperties adds the key & value to the properties of this ReportingDescriptor
-func (r *ReportingDescriptor) WithProperties(key string, value interface{}) *ReportingDescriptor {
+func (r *ReportingDescriptor) WithProperties(key string, value any) *ReportingDescriptor {
 	if r.Properties == nil {
 		r.Properties = NewPropertyBag()
 	}

@@ -37,7 +37,7 @@ func docText(doc *ast.CommentGroup) (string, bool) {
 	return text, text != ""
 }
 
-func CheckPackageComment(pass *analysis.Pass) (interface{}, error) {
+func CheckPackageComment(pass *analysis.Pass) (any, error) {
 	// - At least one file in a non-main package should have a package comment
 	//
 	// - The comment should be of the form
@@ -75,7 +75,7 @@ func CheckPackageComment(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckDotImports(pass *analysis.Pass) (interface{}, error) {
+func CheckDotImports(pass *analysis.Pass) (any, error) {
 	for _, f := range pass.Files {
 	imports:
 		for _, imp := range f.Imports {
@@ -95,7 +95,7 @@ func CheckDotImports(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckDuplicatedImports(pass *analysis.Pass) (interface{}, error) {
+func CheckDuplicatedImports(pass *analysis.Pass) (any, error) {
 	for _, f := range pass.Files {
 		// Collect all imports by their import path
 		imports := make(map[string][]*ast.ImportSpec, len(f.Imports))
@@ -125,7 +125,7 @@ func CheckDuplicatedImports(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckBlankImports(pass *analysis.Pass) (interface{}, error) {
+func CheckBlankImports(pass *analysis.Pass) (any, error) {
 	fset := pass.Fset
 	for _, f := range pass.Files {
 		if code.IsMainLike(pass) || code.IsInTest(pass, f) {
@@ -184,7 +184,7 @@ func CheckBlankImports(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckIncDec(pass *analysis.Pass) (interface{}, error) {
+func CheckIncDec(pass *analysis.Pass) (any, error) {
 	// TODO(dh): this can be noisy for function bodies that look like this:
 	// 	x += 3
 	// 	...
@@ -215,7 +215,7 @@ func CheckIncDec(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckErrorReturn(pass *analysis.Pass) (interface{}, error) {
+func CheckErrorReturn(pass *analysis.Pass) (any, error) {
 fnLoop:
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		sig := fn.Type().(*types.Signature)
@@ -241,7 +241,7 @@ fnLoop:
 
 // CheckUnexportedReturn checks that exported functions on exported
 // types do not return unexported types.
-func CheckUnexportedReturn(pass *analysis.Pass) (interface{}, error) {
+func CheckUnexportedReturn(pass *analysis.Pass) (any, error) {
 	for _, fn := range pass.ResultOf[buildir.Analyzer].(*buildir.IR).SrcFuncs {
 		if fn.Synthetic != 0 || fn.Parent() != nil {
 			continue
@@ -265,7 +265,7 @@ func CheckUnexportedReturn(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckReceiverNames(pass *analysis.Pass) (interface{}, error) {
+func CheckReceiverNames(pass *analysis.Pass) (any, error) {
 	irpkg := pass.ResultOf[buildir.Analyzer].(*buildir.IR).Pkg
 	for _, m := range irpkg.Members {
 		if T, ok := m.Object().(*types.TypeName); ok && !T.IsAlias() {
@@ -289,7 +289,7 @@ func CheckReceiverNames(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckReceiverNamesIdentical(pass *analysis.Pass) (interface{}, error) {
+func CheckReceiverNamesIdentical(pass *analysis.Pass) (any, error) {
 	irpkg := pass.ResultOf[buildir.Analyzer].(*buildir.IR).Pkg
 	for _, m := range irpkg.Members {
 		names := map[string]int{}
@@ -330,7 +330,7 @@ func CheckReceiverNamesIdentical(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckContextFirstArg(pass *analysis.Pass) (interface{}, error) {
+func CheckContextFirstArg(pass *analysis.Pass) (any, error) {
 	// TODO(dh): this check doesn't apply to test helpers. Example from the stdlib:
 	// 	func helperCommandContext(t *testing.T, ctx context.Context, s ...string) (cmd *exec.Cmd) {
 fnLoop:
@@ -356,7 +356,7 @@ fnLoop:
 	return nil, nil
 }
 
-func CheckErrorStrings(pass *analysis.Pass) (interface{}, error) {
+func CheckErrorStrings(pass *analysis.Pass) (any, error) {
 	objNames := map[*ir.Package]map[string]bool{}
 	irpkg := pass.ResultOf[buildir.Analyzer].(*buildir.IR).Pkg
 	objNames[irpkg] = map[string]bool{}
@@ -443,7 +443,7 @@ func CheckErrorStrings(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckTimeNames(pass *analysis.Pass) (interface{}, error) {
+func CheckTimeNames(pass *analysis.Pass) (any, error) {
 	suffixes := []string{
 		"Sec", "Secs", "Seconds",
 		"Msec", "Msecs",
@@ -495,7 +495,7 @@ func CheckTimeNames(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckErrorVarNames(pass *analysis.Pass) (interface{}, error) {
+func CheckErrorVarNames(pass *analysis.Pass) (any, error) {
 	for _, f := range pass.Files {
 		for _, decl := range f.Decls {
 			gen, ok := decl.(*ast.GenDecl)
@@ -595,7 +595,7 @@ var httpStatusCodes = map[int]string{
 	511: "StatusNetworkAuthenticationRequired",
 }
 
-func CheckHTTPStatusCodes(pass *analysis.Pass) (interface{}, error) {
+func CheckHTTPStatusCodes(pass *analysis.Pass) (any, error) {
 	whitelist := map[string]bool{}
 	for _, code := range config.For(pass).HTTPStatusCodeWhitelist {
 		whitelist[code] = true
@@ -643,7 +643,7 @@ func CheckHTTPStatusCodes(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckDefaultCaseOrder(pass *analysis.Pass) (interface{}, error) {
+func CheckDefaultCaseOrder(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		stmt := node.(*ast.SwitchStmt)
 		list := stmt.Body.List
@@ -663,7 +663,7 @@ var (
 	checkYodaConditionsR = pattern.MustParse(`(BinaryExpr right tok left)`)
 )
 
-func CheckYodaConditions(pass *analysis.Pass) (interface{}, error) {
+func CheckYodaConditions(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		if _, edits, ok := code.MatchAndEdit(pass, checkYodaConditionsQ, checkYodaConditionsR, node); ok {
 			report.Report(pass, node, "don't use Yoda conditions",
@@ -675,7 +675,7 @@ func CheckYodaConditions(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckInvisibleCharacters(pass *analysis.Pass) (interface{}, error) {
+func CheckInvisibleCharacters(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		lit := node.(*ast.BasicLit)
 		if lit.Kind != token.STRING {
@@ -776,7 +776,7 @@ func CheckInvisibleCharacters(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckExportedFunctionDocs(pass *analysis.Pass) (interface{}, error) {
+func CheckExportedFunctionDocs(pass *analysis.Pass) (any, error) {
 	fn := func(node ast.Node) {
 		if code.IsInTest(pass, node) {
 			return
@@ -816,7 +816,7 @@ func CheckExportedFunctionDocs(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckExportedTypeDocs(pass *analysis.Pass) (interface{}, error) {
+func CheckExportedTypeDocs(pass *analysis.Pass) (any, error) {
 	var genDecl *ast.GenDecl
 	fn := func(node ast.Node, push bool) bool {
 		if !push {
@@ -882,7 +882,7 @@ func CheckExportedTypeDocs(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func CheckExportedVarDocs(pass *analysis.Pass) (interface{}, error) {
+func CheckExportedVarDocs(pass *analysis.Pass) (any, error) {
 	var genDecl *ast.GenDecl
 	fn := func(node ast.Node, push bool) bool {
 		if !push {
