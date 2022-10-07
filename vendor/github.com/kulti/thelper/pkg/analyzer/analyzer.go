@@ -117,7 +117,7 @@ func NewAnalyzer() *analysis.Analyzer {
 	return a
 }
 
-func (t thelper) run(pass *analysis.Pass) (interface{}, error) {
+func (t thelper) run(pass *analysis.Pass) (any, error) {
 	tCheckOpts, bCheckOpts, tbCheckOpts, ok := t.buildCheckFuncOpts(pass)
 	if !ok {
 		return nil, nil

@@ -44,7 +44,7 @@ func SetBufferPool(bp BufferPool) {
 func init() {
 	SetBufferPool(&defaultPool{
 		pool: &sync.Pool{
-			New: func() interface{} {
+			New: func() any {
 				return new(bytes.Buffer)
 			},
 		},

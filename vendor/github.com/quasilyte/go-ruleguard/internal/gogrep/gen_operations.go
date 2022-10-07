@@ -1,3 +1,4 @@
+//go:build main
 // +build main
 
 package main
@@ -284,14 +285,14 @@ func main() {
 			ValueDoc:           proto.value,
 			ValueIndexDoc:      proto.valueIndex,
 			NumArgs:            numArgs,
-			VariadicMap: variadicMap,
+			VariadicMap:        variadicMap,
 			ExtraValueKindName: extraValueKindName,
 			ValueKindName:      valueKindName,
 		}
 	}
 
 	var buf bytes.Buffer
-	err := fileTemplate.Execute(&buf, map[string]interface{}{
+	err := fileTemplate.Execute(&buf, map[string]any{
 		"Operations": operations,
 	})
 	if err != nil {

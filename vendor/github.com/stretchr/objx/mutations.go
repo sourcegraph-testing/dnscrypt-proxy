@@ -44,7 +44,7 @@ func (m Map) MergeHere(merge Map) Map {
 // Transform builds a new Obj giving the transformer a chance
 // to change the keys and values as it goes. This method requires that
 // the wrapped object be a map[string]interface{}
-func (m Map) Transform(transformer func(key string, value interface{}) (string, interface{})) Map {
+func (m Map) Transform(transformer func(key string, value any) (string, any)) Map {
 	newMap := Map{}
 	for k, v := range m {
 		modifiedKey, modifiedVal := transformer(k, v)
@@ -58,7 +58,7 @@ func (m Map) Transform(transformer func(key string, value interface{}) (string, 
 // Unspecified keys will be unaltered.
 // This method requires that the wrapped object be a map[string]interface{}
 func (m Map) TransformKeys(mapping map[string]string) Map {
-	return m.Transform(func(key string, value interface{}) (string, interface{}) {
+	return m.Transform(func(key string, value any) (string, any) {
 		if newKey, ok := mapping[key]; ok {
 			return newKey, value
 		}

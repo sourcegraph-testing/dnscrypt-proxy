@@ -29,7 +29,7 @@ func NewNoLintLint() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var needs nolintlint.Needs
 			settings := lintCtx.Settings().NoLintLint
 			if settings.RequireExplanation {

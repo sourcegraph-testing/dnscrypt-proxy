@@ -13,15 +13,15 @@ func (m *SortedMap) Contains(key string) bool {
 	return m.trie.Contains(*(*[]byte)(unsafe.Pointer(&key)))
 }
 
-func (m *SortedMap) Get(key string) (value interface{}, ok bool) {
+func (m *SortedMap) Get(key string) (value any, ok bool) {
 	return m.trie.Get(*(*[]byte)(unsafe.Pointer(&key)))
 }
 
-func (m *SortedMap) Set(key string, value interface{}) {
+func (m *SortedMap) Set(key string, value any) {
 	m.trie.Set([]byte(key), value)
 }
 
-func (m *SortedMap) Delete(key string) (value interface{}, ok bool) {
+func (m *SortedMap) Delete(key string) (value any, ok bool) {
 	return m.trie.Delete(*(*[]byte)(unsafe.Pointer(&key)))
 }
 
@@ -36,7 +36,7 @@ func (m *SortedMap) Size() int {
 // Returns a slice of sorted keys
 func (m *SortedMap) Keys() []string {
 	keys := make([]string, 0, m.Size())
-	m.trie.Allprefixed([]byte{}, func(k []byte, v interface{}) bool {
+	m.trie.Allprefixed([]byte{}, func(k []byte, v any) bool {
 		keys = append(keys, string(k))
 		return true
 	})
@@ -45,8 +45,8 @@ func (m *SortedMap) Keys() []string {
 
 // Executes a provided function for each element that has a given prefix.
 // if handle returns `false`, the iteration is aborted.
-func (m *SortedMap) Each(prefix string, handle func(key string, value interface{}) bool) bool {
-	return m.trie.Allprefixed([]byte(prefix), func(k []byte, v interface{}) bool {
+func (m *SortedMap) Each(prefix string, handle func(key string, value any) bool) bool {
+	return m.trie.Allprefixed([]byte(prefix), func(k []byte, v any) bool {
 		return handle(string(k), v)
 	})
 }

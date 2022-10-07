@@ -29,7 +29,7 @@ func NewGoimports() *goanalysis.Linter {
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
 		imports.LocalPrefix = lintCtx.Settings().Goimports.LocalPrefixes
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var fileNames []string
 			for _, f := range pass.Files {
 				pos := pass.Fset.PositionFor(f.Pos(), false)

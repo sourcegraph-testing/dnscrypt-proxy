@@ -39,7 +39,7 @@ type CheckerParam struct {
 	//	- int
 	//	- bool
 	//	- string
-	Value interface{}
+	Value any
 
 	// Usage gives an overview about what parameter does.
 	Usage string
@@ -232,7 +232,7 @@ type CheckerContext struct {
 }
 
 // Warn adds a Warning to checker output.
-func (ctx *CheckerContext) Warn(node ast.Node, format string, args ...interface{}) {
+func (ctx *CheckerContext) Warn(node ast.Node, format string, args ...any) {
 	ctx.warnings = append(ctx.warnings, Warning{
 		Text: ctx.printer.Sprintf(format, args...),
 		Node: node,

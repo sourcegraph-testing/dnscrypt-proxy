@@ -29,7 +29,7 @@ func NewFunlen() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var issues []funlen.Message
 			for _, file := range pass.Files {
 				fileIssues := funlen.Run(file, pass.Fset, lintCtx.Settings().Funlen.Lines, lintCtx.Settings().Funlen.Statements)

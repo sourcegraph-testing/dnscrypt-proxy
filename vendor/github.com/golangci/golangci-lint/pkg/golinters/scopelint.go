@@ -29,7 +29,7 @@ func NewScopelint() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var res []result.Issue
 			for _, file := range pass.Files {
 				n := Node{
@@ -73,6 +73,7 @@ type Node struct {
 // Visit method is invoked for each node encountered by Walk.
 // If the result visitor w is not nil, Walk visits each of the children
 // of node with the visitor w, followed by a call of w.Visit(nil).
+//
 //nolint:gocyclo,gocritic
 func (f *Node) Visit(node ast.Node) ast.Visitor {
 	switch typedNode := node.(type) {
@@ -162,13 +163,14 @@ func (f *Node) Visit(node ast.Node) ast.Visitor {
 
 // The variadic arguments may start with link and category types,
 // and must end with a format string and any arguments.
+//
 //nolint:interfacer
-func (f *Node) errorf(n ast.Node, format string, args ...interface{}) {
+func (f *Node) errorf(n ast.Node, format string, args ...any) {
 	pos := f.fset.Position(n.Pos())
 	f.errorAtf(pos, format, args...)
 }
 
-func (f *Node) errorAtf(pos token.Position, format string, args ...interface{}) {
+func (f *Node) errorAtf(pos token.Position, format string, args ...any) {
 	*f.issues = append(*f.issues, result.Issue{
 		Pos:        pos,
 		Text:       fmt.Sprintf(format, args...),

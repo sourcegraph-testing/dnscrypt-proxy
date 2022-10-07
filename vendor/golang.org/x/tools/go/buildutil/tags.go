@@ -20,7 +20,8 @@ const TagsFlagDoc = "a list of `build tags` to consider satisfied during the bui
 // See $GOROOT/src/cmd/go/doc.go for description of 'go build -tags' flag.
 //
 // Example:
-// 	flag.Var((*buildutil.TagsFlag)(&build.Default.BuildTags), "tags", buildutil.TagsFlagDoc)
+//
+//	flag.Var((*buildutil.TagsFlag)(&build.Default.BuildTags), "tags", buildutil.TagsFlagDoc)
 type TagsFlag []string
 
 func (v *TagsFlag) Set(s string) error {
@@ -32,7 +33,7 @@ func (v *TagsFlag) Set(s string) error {
 	return err
 }
 
-func (v *TagsFlag) Get() interface{} { return *v }
+func (v *TagsFlag) Get() any { return *v }
 
 func splitQuotedFields(s string) ([]string, error) {
 	// Split fields allowing '' or "" around elements.

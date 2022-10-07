@@ -35,7 +35,7 @@ func newFlagSet() flag.FlagSet {
 	return *fs
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	splitFn := func(c rune) bool { return c == ',' }
 	inspector := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 	structPatterns := strings.FieldsFunc(StructPatternList, splitFn)

@@ -36,7 +36,7 @@ func (r *AddConstantRule) Apply(file *lint.File, arguments lint.Arguments) []lin
 	strLitLimit := defaultStrLitLimit
 	var whiteList = newWhiteList()
 	if len(arguments) > 0 {
-		args, ok := arguments[0].(map[string]interface{})
+		args, ok := arguments[0].(map[string]any)
 		if !ok {
 			panic(fmt.Sprintf("Invalid argument to the add-constant rule. Expecting a k,v map, got %T", arguments[0]))
 		}

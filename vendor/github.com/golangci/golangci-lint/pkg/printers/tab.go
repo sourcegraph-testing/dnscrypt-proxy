@@ -24,7 +24,7 @@ func NewTab(printLinterName bool, log logutils.Log) *Tab {
 	}
 }
 
-func (p Tab) SprintfColored(ca color.Attribute, format string, args ...interface{}) string {
+func (p Tab) SprintfColored(ca color.Attribute, format string, args ...any) string {
 	c := color.New(ca)
 	return c.Sprintf(format, args...)
 }

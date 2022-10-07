@@ -17,7 +17,7 @@ var Analyzer = &analysis.Analyzer{
 	Run:  checkPath,
 }
 
-func checkPath(pass *analysis.Pass) (interface{}, error) {
+func checkPath(pass *analysis.Pass) (any, error) {
 	for _, file := range pass.Files {
 		if isGenerated(file) {
 			continue

@@ -139,7 +139,7 @@ func toSF(profs []*cover.Profile) ([]*SourceFile, error) {
 				maxLineNo = block.EndLine
 			}
 		}
-		sf.Coverage = make([]interface{}, maxLineNo)
+		sf.Coverage = make([]any, maxLineNo)
 		for i := 1; i <= maxLineNo; i++ {
 			if c, ok := lineLookup[i]; ok {
 				sf.Coverage[i-1] = c

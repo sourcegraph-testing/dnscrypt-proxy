@@ -243,7 +243,7 @@ func (c Checker) Check(reader io.Reader, writer io.Writer) (issues []Issue, err 
 	return issues, returnErr
 }
 
-func (c Checker) debugf(format string, s ...interface{}) {
+func (c Checker) debugf(format string, s ...any) {
 	if c.Debug != nil {
 		fmt.Fprint(c.Debug, "DEBUG: ")
 		fmt.Fprintf(c.Debug, format+"\n", s...)

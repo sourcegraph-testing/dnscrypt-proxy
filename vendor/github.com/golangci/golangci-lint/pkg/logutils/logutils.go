@@ -21,9 +21,9 @@ func getEnabledDebugs() map[string]bool {
 
 var enabledDebugs = getEnabledDebugs()
 
-type DebugFunc func(format string, args ...interface{})
+type DebugFunc func(format string, args ...any)
 
-func nopDebugf(format string, args ...interface{}) {}
+func nopDebugf(format string, args ...any) {}
 
 func Debug(tag string) DebugFunc {
 	if !enabledDebugs[tag] {
@@ -33,7 +33,7 @@ func Debug(tag string) DebugFunc {
 	logger := NewStderrLog(tag)
 	logger.SetLevel(LogLevelDebug)
 
-	return func(format string, args ...interface{}) {
+	return func(format string, args ...any) {
 		logger.Debugf(format, args...)
 	}
 }

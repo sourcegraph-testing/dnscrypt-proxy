@@ -40,7 +40,7 @@ type runner struct {
 
 // run executes an analysis for the pass. The receiver is passed
 // by value because this func is called in parallel for different passes.
-func (r runner) run(pass *analysis.Pass) (interface{}, error) {
+func (r runner) run(pass *analysis.Pass) (any, error) {
 	r.pass = pass
 	funcs := pass.ResultOf[buildssa.Analyzer].(*buildssa.SSA).SrcFuncs
 

@@ -257,8 +257,8 @@ func (srv *Server) isStarted() bool {
 	return started
 }
 
-func makeUDPBuffer(size int) func() interface{} {
-	return func() interface{} {
+func makeUDPBuffer(size int) func() any {
+	return func() any {
 		return make([]byte, size)
 	}
 }

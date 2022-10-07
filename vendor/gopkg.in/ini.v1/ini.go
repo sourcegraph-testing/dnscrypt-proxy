@@ -1,3 +1,4 @@
+//go:build go1.6
 // +build go1.6
 
 // Copyright 2014 Unknwon
@@ -121,7 +122,7 @@ type LoadOptions struct {
 type DebugFunc func(message string)
 
 // LoadSources allows caller to apply customized options for loading from data source(s).
-func LoadSources(opts LoadOptions, source interface{}, others ...interface{}) (_ *File, err error) {
+func LoadSources(opts LoadOptions, source any, others ...any) (_ *File, err error) {
 	sources := make([]dataSource, len(others)+1)
 	sources[0], err = parseDataSource(source)
 	if err != nil {
@@ -143,24 +144,24 @@ func LoadSources(opts LoadOptions, source interface{}, others ...interface{}) (_
 // Load loads and parses from INI data sources.
 // Arguments can be mixed of file name with string type, or raw data in []byte.
 // It will return error if list contains nonexistent files.
-func Load(source interface{}, others ...interface{}) (*File, error) {
+func Load(source any, others ...any) (*File, error) {
 	return LoadSources(LoadOptions{}, source, others...)
 }
 
 // LooseLoad has exactly same functionality as Load function
 // except it ignores nonexistent files instead of returning error.
-func LooseLoad(source interface{}, others ...interface{}) (*File, error) {
+func LooseLoad(source any, others ...any) (*File, error) {
 	return LoadSources(LoadOptions{Loose: true}, source, others...)
 }
 
 // InsensitiveLoad has exactly same functionality as Load function
 // except it forces all section and key names to be lowercased.
-func InsensitiveLoad(source interface{}, others ...interface{}) (*File, error) {
+func InsensitiveLoad(source any, others ...any) (*File, error) {
 	return LoadSources(LoadOptions{Insensitive: true}, source, others...)
 }
 
 // ShadowLoad has exactly same functionality as Load function
 // except it allows have shadow keys.
-func ShadowLoad(source interface{}, others ...interface{}) (*File, error) {
+func ShadowLoad(source any, others ...any) (*File, error) {
 	return LoadSources(LoadOptions{AllowShadows: true}, source, others...)
 }

@@ -48,7 +48,7 @@ func (env *Env) GetEvalEnv() *EvalEnv {
 		nativeFuncs: env.nativeFuncs,
 		userFuncs:   env.userFuncs,
 		stack: &ValueStack{
-			objects: make([]interface{}, 0, 32),
+			objects: make([]any, 0, 32),
 			ints:    make([]int, 0, 16),
 		},
 	}
@@ -94,7 +94,7 @@ func Compile(ctx *CompileContext, fn *ast.FuncDecl) (compiled *Func, err error) 
 }
 
 // Call invokes a given function with provided arguments.
-func Call(env *EvalEnv, fn *Func, args ...interface{}) CallResult {
+func Call(env *EvalEnv, fn *Func, args ...any) CallResult {
 	env.stack.objects = env.stack.objects[:0]
 	env.stack.ints = env.stack.ints[:0]
 	return eval(env, fn, args)
@@ -104,13 +104,13 @@ func Call(env *EvalEnv, fn *Func, args ...interface{}) CallResult {
 // For most functions, Value() should be called to get the actual result.
 // For int-typed functions, IntValue() should be used instead.
 type CallResult struct {
-	value       interface{}
+	value       any
 	scalarValue uint64
 }
 
 // Value unboxes an actual call return value.
 // For int results, use IntValue().
-func (res CallResult) Value() interface{} { return res.value }
+func (res CallResult) Value() any { return res.value }
 
 // IntValue unboxes an actual call return value.
 func (res CallResult) IntValue() int { return int(res.scalarValue) }
@@ -126,7 +126,7 @@ func Disasm(env *Env, fn *Func) string {
 type Func struct {
 	code []byte
 
-	constants    []interface{}
+	constants    []any
 	intConstants []int
 }
 
@@ -138,13 +138,13 @@ type Func struct {
 // If int was pushed with PushInt(), it should be retrieved by PopInt().
 // It's a bad idea to do a Push() and then PopInt() and vice-versa.
 type ValueStack struct {
-	objects []interface{}
+	objects []any
 	ints    []int
 }
 
 // Pop removes the top stack element and returns it.
 // Important: for int-typed values, use PopInt.
-func (s *ValueStack) Pop() interface{} {
+func (s *ValueStack) Pop() any {
 	x := s.objects[len(s.objects)-1]
 	s.objects = s.objects[:len(s.objects)-1]
 	return x
@@ -159,7 +159,7 @@ func (s *ValueStack) PopInt() int {
 
 // Push adds x to the stack.
 // Important: for int-typed values, use PushInt.
-func (s *ValueStack) Push(x interface{}) { s.objects = append(s.objects, x) }
+func (s *ValueStack) Push(x any) { s.objects = append(s.objects, x) }
 
 // PushInt adds x to the stack.
 func (s *ValueStack) PushInt(x int) { s.ints = append(s.ints, x) }

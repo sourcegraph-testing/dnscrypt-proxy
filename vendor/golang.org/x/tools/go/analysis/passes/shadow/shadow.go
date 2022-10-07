@@ -57,7 +57,7 @@ func init() {
 	Analyzer.Flags.BoolVar(&strict, "strict", strict, "whether to be strict about shadowing; can be noisy")
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 
 	spans := make(map[types.Object]span)
@@ -120,7 +120,6 @@ func run(pass *analysis.Pass) (interface{}, error) {
 // the block, we should complain about it but don't.
 // - A variable declared inside a function literal can falsely be identified
 // as shadowing a variable in the outer function.
-//
 type span struct {
 	min token.Pos
 	max token.Pos

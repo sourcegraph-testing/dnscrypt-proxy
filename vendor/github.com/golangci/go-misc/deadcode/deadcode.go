@@ -40,7 +40,7 @@ func Run(program *loader.Program) ([]Issue, error) {
 	return issues, nil
 }
 
-func fatalf(format string, args ...interface{}) {
+func fatalf(format string, args ...any) {
 	panic(fmt.Errorf(format, args...))
 }
 
@@ -66,7 +66,7 @@ func (ctx *Context) pos(pos token.Pos) token.Position {
 
 // error formats the error to standard error, adding program
 // identification and a newline
-func (ctx *Context) errorf(pos token.Pos, format string, args ...interface{}) {
+func (ctx *Context) errorf(pos token.Pos, format string, args ...any) {
 	p := ctx.pos(pos)
 	fmt.Fprintf(os.Stderr, p.String()+": "+format+"\n", args...)
 	exitCode = 2

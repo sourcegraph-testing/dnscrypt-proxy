@@ -331,7 +331,7 @@ func (f *File) add(errs *ErrorList, block *LineBlock, line *Line, verb string, a
 			Err:      err,
 		})
 	}
-	errorf := func(format string, args ...interface{}) {
+	errorf := func(format string, args ...any) {
 		wrapError(fmt.Errorf(format, args...))
 	}
 
@@ -476,7 +476,7 @@ func parseReplace(filename string, line *Line, verb string, args []string, fix V
 			Err:      err,
 		}
 	}
-	errorf := func(format string, args ...interface{}) *Error {
+	errorf := func(format string, args ...any) *Error {
 		return wrapError(fmt.Errorf(format, args...))
 	}
 
@@ -585,7 +585,7 @@ func (f *WorkFile) add(errs *ErrorList, line *Line, verb string, args []string, 
 			Err:      err,
 		})
 	}
-	errorf := func(format string, args ...interface{}) {
+	errorf := func(format string, args ...any) {
 		wrapError(fmt.Errorf(format, args...))
 	}
 

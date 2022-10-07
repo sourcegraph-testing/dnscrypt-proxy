@@ -134,7 +134,7 @@ func NewEncoder(w io.Writer) *Encoder {
 //
 // An error is returned if the value given cannot be encoded to a valid TOML
 // document.
-func (enc *Encoder) Encode(v interface{}) error {
+func (enc *Encoder) Encode(v any) error {
 	rv := eindirect(reflect.ValueOf(v))
 	if err := enc.safeEncode(Key([]string{}), rv); err != nil {
 		return err
@@ -668,16 +668,15 @@ func (enc *Encoder) newline() {
 
 // Write a key/value pair:
 //
-//   key = <any value>
+//	key = <any value>
 //
 // This is also used for "k = v" in inline tables; so something like this will
 // be written in three calls:
 //
-//     ┌────────────────────┐
-//     │      ┌───┐  ┌─────┐│
-//     v      v   v  v     vv
-//     key = {k = v, k2 = v2}
-//
+//	┌────────────────────┐
+//	│      ┌───┐  ┌─────┐│
+//	v      v   v  v     vv
+//	key = {k = v, k2 = v2}
 func (enc *Encoder) writeKeyValue(key Key, val reflect.Value, inline bool) {
 	if len(key) == 0 {
 		encPanic(errNoKey)
@@ -689,7 +688,7 @@ func (enc *Encoder) writeKeyValue(key Key, val reflect.Value, inline bool) {
 	}
 }
 
-func (enc *Encoder) wf(format string, v ...interface{}) {
+func (enc *Encoder) wf(format string, v ...any) {
 	_, err := fmt.Fprintf(enc.w, format, v...)
 	if err != nil {
 		encPanic(err)

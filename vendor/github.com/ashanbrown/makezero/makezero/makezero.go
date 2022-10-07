@@ -58,7 +58,7 @@ type visitor struct {
 	comments []*ast.CommentGroup // comments to apply during this visit
 	info     *types.Info
 
-	nonZeroLengthSliceDecls map[interface{}]struct{}
+	nonZeroLengthSliceDecls map[any]struct{}
 	fset                    *token.FileSet
 	issues                  []Issue
 }
@@ -81,7 +81,7 @@ func (l Linter) Run(fset *token.FileSet, info *types.Info, nodes ...ast.Node) ([
 			comments = file.Comments
 		}
 		visitor := visitor{
-			nonZeroLengthSliceDecls: make(map[interface{}]struct{}),
+			nonZeroLengthSliceDecls: make(map[any]struct{}),
 			initLenMustBeZero:       l.initLenMustBeZero,
 			info:                    info,
 			fset:                    fset,

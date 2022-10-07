@@ -21,11 +21,11 @@ var arrayAccesRegex = regexp.MustCompile(arrayAccesRegexString)
 //
 // Get can only operate directly on map[string]interface{} and []interface.
 //
-// Example
+// # Example
 //
 // To access the title of the third chapter of the second book, do:
 //
-//    o.Get("books[1].chapters[2].title")
+//	o.Get("books[1].chapters[2].title")
 func (m Map) Get(selector string) *Value {
 	rawObj := access(m, selector, nil, false)
 	return &Value{data: rawObj}
@@ -36,22 +36,22 @@ func (m Map) Get(selector string) *Value {
 //
 // Set can only operate directly on map[string]interface{} and []interface
 //
-// Example
+// # Example
 //
 // To set the title of the third chapter of the second book, do:
 //
-//    o.Set("books[1].chapters[2].title","Time to Go")
-func (m Map) Set(selector string, value interface{}) Map {
+//	o.Set("books[1].chapters[2].title","Time to Go")
+func (m Map) Set(selector string, value any) Map {
 	access(m, selector, value, true)
 	return m
 }
 
 // access accesses the object using the selector and performs the
 // appropriate action.
-func access(current, selector, value interface{}, isSet bool) interface{} {
+func access(current, selector, value any, isSet bool) any {
 	switch selector.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-		if array, ok := current.([]interface{}); ok {
+		if array, ok := current.([]any); ok {
 			index := intFromInterface(selector)
 			if index >= len(array) {
 				return nil
@@ -84,12 +84,12 @@ func access(current, selector, value interface{}, isSet bool) interface{} {
 			}
 		}
 		if curMap, ok := current.(Map); ok {
-			current = map[string]interface{}(curMap)
+			current = map[string]any(curMap)
 		}
 		// get the object in question
 		switch current.(type) {
-		case map[string]interface{}:
-			curMSI := current.(map[string]interface{})
+		case map[string]any:
+			curMSI := current.(map[string]any)
 			if len(selSegs) <= 1 && isSet {
 				curMSI[thisSel] = value
 				return nil
@@ -100,7 +100,7 @@ func access(current, selector, value interface{}, isSet bool) interface{} {
 		}
 		// do we need to access the item of an array?
 		if index > -1 {
-			if array, ok := current.([]interface{}); ok {
+			if array, ok := current.([]any); ok {
 				if index < len(array) {
 					current = array[index]
 				} else {
@@ -118,7 +118,7 @@ func access(current, selector, value interface{}, isSet bool) interface{} {
 // intFromInterface converts an interface object to the largest
 // representation of an unsigned integer using a type switch and
 // assertions
-func intFromInterface(selector interface{}) int {
+func intFromInterface(selector any) int {
 	var value int
 	switch selector.(type) {
 	case int:

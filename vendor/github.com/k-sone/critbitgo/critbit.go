@@ -36,7 +36,7 @@ type internal struct {
 
 type external struct {
 	key   []byte
-	value interface{}
+	value any
 }
 
 // finding the critical bit.
@@ -100,7 +100,7 @@ func (t *Trie) Contains(key []byte) bool {
 
 // get member.
 // if `key` is in Trie, `ok` is true.
-func (t *Trie) Get(key []byte) (value interface{}, ok bool) {
+func (t *Trie) Get(key []byte) (value any, ok bool) {
 	if n := t.search(key); n.external != nil && bytes.Equal(n.external.key, key) {
 		return n.external.value, true
 	}
@@ -108,7 +108,7 @@ func (t *Trie) Get(key []byte) (value interface{}, ok bool) {
 }
 
 // insert into the tree (replaceable).
-func (t *Trie) insert(key []byte, value interface{}, replace bool) bool {
+func (t *Trie) insert(key []byte, value any, replace bool) bool {
 	// an empty tree
 	if t.size == 0 {
 		t.root.external = &external{
@@ -165,18 +165,18 @@ func (t *Trie) insert(key []byte, value interface{}, replace bool) bool {
 
 // insert into the tree.
 // if `key` is alredy in Trie, return false.
-func (t *Trie) Insert(key []byte, value interface{}) bool {
+func (t *Trie) Insert(key []byte, value any) bool {
 	return t.insert(key, value, false)
 }
 
 // set into the tree.
-func (t *Trie) Set(key []byte, value interface{}) {
+func (t *Trie) Set(key []byte, value any) {
 	t.insert(key, value, true)
 }
 
 // deleting elements.
 // if `key` is in Trie, `ok` is true.
-func (t *Trie) Delete(key []byte) (value interface{}, ok bool) {
+func (t *Trie) Delete(key []byte) (value any, ok bool) {
 	// an empty tree
 	if t.size == 0 {
 		return
@@ -226,7 +226,7 @@ func (t *Trie) Size() int {
 
 // fetching elements with a given prefix.
 // handle is called with arguments key and value (if handle returns `false`, the iteration is aborted)
-func (t *Trie) Allprefixed(prefix []byte, handle func(key []byte, value interface{}) bool) bool {
+func (t *Trie) Allprefixed(prefix []byte, handle func(key []byte, value any) bool) bool {
 	// an empty tree
 	if t.size == 0 {
 		return true
@@ -252,7 +252,7 @@ func (t *Trie) Allprefixed(prefix []byte, handle func(key []byte, value interfac
 	return allprefixed(top, handle)
 }
 
-func allprefixed(n *node, handle func([]byte, interface{}) bool) bool {
+func allprefixed(n *node, handle func([]byte, any) bool) bool {
 	if n.internal != nil {
 		// dealing with an internal node while recursing
 		for i := 0; i < 2; i++ {
@@ -269,7 +269,7 @@ func allprefixed(n *node, handle func([]byte, interface{}) bool) bool {
 
 // Search for the longest matching key from the beginning of the given key.
 // if `key` is in Trie, `ok` is true.
-func (t *Trie) LongestPrefix(given []byte) (key []byte, value interface{}, ok bool) {
+func (t *Trie) LongestPrefix(given []byte) (key []byte, value any, ok bool) {
 	// an empty tree
 	if t.size == 0 {
 		return
@@ -277,7 +277,7 @@ func (t *Trie) LongestPrefix(given []byte) (key []byte, value interface{}, ok bo
 	return longestPrefix(&t.root, given)
 }
 
-func longestPrefix(n *node, key []byte) ([]byte, interface{}, bool) {
+func longestPrefix(n *node, key []byte) ([]byte, any, bool) {
 	if n.internal != nil {
 		direction := n.internal.direction(key)
 		if k, v, ok := longestPrefix(&n.internal.child[direction], key); ok {
@@ -296,7 +296,7 @@ func longestPrefix(n *node, key []byte) ([]byte, interface{}, bool) {
 
 // Iterating elements from a given start key.
 // handle is called with arguments key and value (if handle returns `false`, the iteration is aborted)
-func (t *Trie) Walk(start []byte, handle func(key []byte, value interface{}) bool) bool {
+func (t *Trie) Walk(start []byte, handle func(key []byte, value any) bool) bool {
 	if t.size == 0 {
 		return true
 	}
@@ -307,7 +307,7 @@ func (t *Trie) Walk(start []byte, handle func(key []byte, value interface{}) boo
 	return walk(&t.root, start, &seek, handle)
 }
 
-func walk(n *node, key []byte, seek *bool, handle func([]byte, interface{}) bool) bool {
+func walk(n *node, key []byte, seek *bool, handle func([]byte, any) bool) bool {
 	if n.internal != nil {
 		var direction int
 		if *seek {

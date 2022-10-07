@@ -28,7 +28,7 @@ func NewNestif() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			checker := &nestif.Checker{
 				MinComplexity: lintCtx.Settings().Nestif.MinComplexity,
 			}

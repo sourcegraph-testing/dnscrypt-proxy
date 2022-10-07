@@ -48,7 +48,7 @@ func NewRevive(cfg *config.ReviveSettings) *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var files []string
 
 			for _, file := range pass.Files {
@@ -175,8 +175,8 @@ func getReviveConfig(cfg *config.ReviveSettings) (*lint.Config, error) {
 	return conf, nil
 }
 
-func createConfigMap(cfg *config.ReviveSettings) map[string]interface{} {
-	rawRoot := map[string]interface{}{
+func createConfigMap(cfg *config.ReviveSettings) map[string]any {
+	rawRoot := map[string]any{
 		"ignoreGeneratedHeader": cfg.IgnoreGeneratedHeader,
 		"confidence":            cfg.Confidence,
 		"severity":              cfg.Severity,
@@ -184,9 +184,9 @@ func createConfigMap(cfg *config.ReviveSettings) map[string]interface{} {
 		"warningCode":           cfg.WarningCode,
 	}
 
-	rawDirectives := map[string]map[string]interface{}{}
+	rawDirectives := map[string]map[string]any{}
 	for _, directive := range cfg.Directives {
-		rawDirectives[directive.Name] = map[string]interface{}{
+		rawDirectives[directive.Name] = map[string]any{
 			"severity": directive.Severity,
 		}
 	}
@@ -195,9 +195,9 @@ func createConfigMap(cfg *config.ReviveSettings) map[string]interface{} {
 		rawRoot["directive"] = rawDirectives
 	}
 
-	rawRules := map[string]map[string]interface{}{}
+	rawRules := map[string]map[string]any{}
 	for _, s := range cfg.Rules {
-		rawRules[s.Name] = map[string]interface{}{
+		rawRules[s.Name] = map[string]any{
 			"severity":  s.Severity,
 			"arguments": safeTomlSlice(s.Arguments),
 			"disabled":  s.Disabled,
@@ -211,19 +211,19 @@ func createConfigMap(cfg *config.ReviveSettings) map[string]interface{} {
 	return rawRoot
 }
 
-func safeTomlSlice(r []interface{}) []interface{} {
+func safeTomlSlice(r []any) []any {
 	if len(r) == 0 {
 		return nil
 	}
 
-	if _, ok := r[0].(map[interface{}]interface{}); !ok {
+	if _, ok := r[0].(map[any]any); !ok {
 		return r
 	}
 
-	var typed []interface{}
+	var typed []any
 	for _, elt := range r {
-		item := map[string]interface{}{}
-		for k, v := range elt.(map[interface{}]interface{}) {
+		item := map[string]any{}
+		for k, v := range elt.(map[any]any) {
 			item[k.(string)] = v
 		}
 

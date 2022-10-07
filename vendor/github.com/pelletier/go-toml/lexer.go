@@ -108,7 +108,7 @@ func (l *tomlLexer) follow(next string) bool {
 
 // Error management
 
-func (l *tomlLexer) errorf(format string, args ...interface{}) tomlLexStateFn {
+func (l *tomlLexer) errorf(format string, args ...any) tomlLexStateFn {
 	l.tokens = append(l.tokens, token{
 		Position: Position{l.line, l.col},
 		typ:      tokenError,

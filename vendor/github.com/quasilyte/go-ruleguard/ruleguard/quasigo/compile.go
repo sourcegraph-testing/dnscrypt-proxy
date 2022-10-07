@@ -34,7 +34,7 @@ func compileFunc(ctx *CompileContext, fn *ast.FuncDecl) *Func {
 	cl := compiler{
 		ctx:              ctx,
 		fnType:           ctx.Types.ObjectOf(fn.Name).Type().(*types.Signature),
-		constantsPool:    make(map[interface{}]int),
+		constantsPool:    make(map[any]int),
 		intConstantsPool: make(map[int]int),
 		locals:           make(map[string]int),
 	}
@@ -50,12 +50,12 @@ type compiler struct {
 	lastOp opcode
 
 	locals           map[string]int
-	constantsPool    map[interface{}]int
+	constantsPool    map[any]int
 	intConstantsPool map[int]int
 	params           map[string]int
 
 	code         []byte
-	constants    []interface{}
+	constants    []any
 	intConstants []int
 
 	breakTarget    *label
@@ -605,7 +605,7 @@ func (cl *compiler) internIntConstant(v int) int {
 	return id
 }
 
-func (cl *compiler) internConstant(v interface{}) int {
+func (cl *compiler) internConstant(v any) int {
 	if _, ok := v.(int); ok {
 		panic("compiler error: int constant interned as interface{}")
 	}
@@ -665,7 +665,7 @@ func (cl *compiler) errorUnsupportedType(e ast.Node, typ types.Type, where strin
 	return cl.errorf(e, "%s type: %s is not supported, try something simpler", where, typ)
 }
 
-func (cl *compiler) errorf(n ast.Node, format string, args ...interface{}) compileError {
+func (cl *compiler) errorf(n ast.Node, format string, args ...any) compileError {
 	loc := cl.ctx.Fset.Position(n.Pos())
 	message := fmt.Sprintf("%s:%d: %s", loc.Filename, loc.Line, fmt.Sprintf(format, args...))
 	return compileError(message)

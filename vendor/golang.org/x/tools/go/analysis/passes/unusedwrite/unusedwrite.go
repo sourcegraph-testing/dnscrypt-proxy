@@ -41,7 +41,7 @@ Another example is about non-pointer receiver:
 `
 
 // Analyzer reports instances of writes to struct fields and arrays
-//that are never read.
+// that are never read.
 var Analyzer = &analysis.Analyzer{
 	Name:     "unusedwrite",
 	Doc:      Doc,
@@ -49,7 +49,7 @@ var Analyzer = &analysis.Analyzer{
 	Run:      run,
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	// Check the writes to struct and array objects.
 	checkStore := func(store *ssa.Store) {
 		// Consider field/index writes to an object whose elements are copied and not shared.

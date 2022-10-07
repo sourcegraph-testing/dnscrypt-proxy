@@ -22,7 +22,7 @@ var Analyzer = &analysis.Analyzer{
 	Requires: []*analysis.Analyzer{inspect.Analyzer},
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	// if the package does not import time, it can be skipped from analysis
 	if !hasImport(pass.Pkg, "time") {
 		return nil, nil

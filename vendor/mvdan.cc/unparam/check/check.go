@@ -153,7 +153,7 @@ func (c *Checker) CheckExportedFuncs(exported bool) {
 	c.exported = exported
 }
 
-func (c *Checker) debug(format string, a ...interface{}) {
+func (c *Checker) debug(format string, a ...any) {
 	if c.debugLog != nil {
 		fmt.Fprintf(c.debugLog, format, a...)
 	}
@@ -456,7 +456,7 @@ func findFunction(freeVars map[*ssa.FreeVar]*ssa.Function, value ssa.Value) *ssa
 }
 
 // addIssue records a newly found unused parameter.
-func (c *Checker) addIssue(fn *ssa.Function, pos token.Pos, format string, args ...interface{}) {
+func (c *Checker) addIssue(fn *ssa.Function, pos token.Pos, format string, args ...any) {
 	c.issues = append(c.issues, Issue{
 		pos:   pos,
 		fname: fn.RelString(fn.Package().Pkg),

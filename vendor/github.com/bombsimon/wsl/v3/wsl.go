@@ -956,7 +956,7 @@ func (p *Processor) findBlockStmt(node ast.Node) []*ast.BlockStmt {
 // Known fields with X that are handled:
 // IndexExpr, ExprStmt, SelectorExpr, StarExpr, ParentExpr, TypeAssertExpr,
 // RangeStmt, UnaryExpr, ParenExpr, SliceExpr, IncDecStmt.
-func maybeX(node interface{}) (ast.Node, bool) {
+func maybeX(node any) (ast.Node, bool) {
 	maybeHasX := reflect.Indirect(reflect.ValueOf(node)).FieldByName("X")
 	if !maybeHasX.IsValid() {
 		return nil, false
@@ -1238,7 +1238,7 @@ func (p *Processor) addError(pos token.Pos, reason string) {
 	})
 }
 
-func (p *Processor) addWarning(w string, pos token.Pos, t interface{}) {
+func (p *Processor) addWarning(w string, pos token.Pos, t any) {
 	position := p.fileSet.Position(pos)
 
 	p.warnings = append(p.warnings,

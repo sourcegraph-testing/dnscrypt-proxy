@@ -244,7 +244,7 @@ type category string
 // The variadic arguments may start with link and category types,
 // and must end with a format string and any arguments.
 // It returns the new Problem.
-func (f *file) errorf(n ast.Node, confidence float64, args ...interface{}) *Problem {
+func (f *file) errorf(n ast.Node, confidence float64, args ...any) *Problem {
 	pos := f.fset.Position(n.Pos())
 	if pos.Filename == "" {
 		pos.Filename = f.filename
@@ -252,7 +252,7 @@ func (f *file) errorf(n ast.Node, confidence float64, args ...interface{}) *Prob
 	return f.pkg.errorfAt(pos, confidence, args...)
 }
 
-func (p *pkg) errorfAt(pos token.Position, confidence float64, args ...interface{}) *Problem {
+func (p *pkg) errorfAt(pos token.Position, confidence float64, args ...any) *Problem {
 	problem := Problem{
 		Position:   pos,
 		Confidence: confidence,
@@ -1509,7 +1509,7 @@ func (f *file) walk(fn func(ast.Node) bool) {
 	ast.Walk(walker(fn), f.f)
 }
 
-func (f *file) render(x interface{}) string {
+func (f *file) render(x any) string {
 	var buf bytes.Buffer
 	if err := printer.Fprint(&buf, f.fset, x); err != nil {
 		panic(err)
@@ -1517,7 +1517,7 @@ func (f *file) render(x interface{}) string {
 	return buf.String()
 }
 
-func (f *file) debugRender(x interface{}) string {
+func (f *file) debugRender(x any) string {
 	var buf bytes.Buffer
 	if err := ast.Fprint(&buf, f.fset, x, nil); err != nil {
 		panic(err)

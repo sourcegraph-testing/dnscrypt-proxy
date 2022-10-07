@@ -54,7 +54,7 @@ var acceptedFuzzTypes = []types.Type{
 	types.NewSlice(types.Universe.Lookup("byte").Type()),
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	for _, f := range pass.Files {
 		if !strings.HasSuffix(pass.Fset.File(f.Pos()).Name(), "_test.go") {
 			continue
@@ -93,14 +93,15 @@ func checkFuzz(pass *analysis.Pass, fn *ast.FuncDecl) {
 }
 
 // Check the arguments of f.Fuzz() calls :
-// 1. f.Fuzz() should call a function and it should be of type (*testing.F).Fuzz().
-// 2. The called function in f.Fuzz(func(){}) should not return result.
-// 3. First argument of func() should be of type *testing.T
-// 4. Second argument onwards should be of type []byte, string, bool, byte,
-//	  rune, float32, float64, int, int8, int16, int32, int64, uint, uint8, uint16,
-//	  uint32, uint64
-// 5. func() must not call any *F methods, e.g. (*F).Log, (*F).Error, (*F).Skip
-//    The only *F methods that are allowed in the (*F).Fuzz function are (*F).Failed and (*F).Name.
+//  1. f.Fuzz() should call a function and it should be of type (*testing.F).Fuzz().
+//  2. The called function in f.Fuzz(func(){}) should not return result.
+//  3. First argument of func() should be of type *testing.T
+//  4. Second argument onwards should be of type []byte, string, bool, byte,
+//     rune, float32, float64, int, int8, int16, int32, int64, uint, uint8, uint16,
+//     uint32, uint64
+//  5. func() must not call any *F methods, e.g. (*F).Log, (*F).Error, (*F).Skip
+//     The only *F methods that are allowed in the (*F).Fuzz function are (*F).Failed and (*F).Name.
+//
 // Returns the list of parameters to the fuzz function, if they are valid fuzz parameters.
 func checkFuzzCall(pass *analysis.Pass, fn *ast.FuncDecl) (params *types.Tuple) {
 	ast.Inspect(fn, func(n ast.Node) bool {

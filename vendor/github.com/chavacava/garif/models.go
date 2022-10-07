@@ -75,7 +75,7 @@ type Artifact struct {
 	Properties *PropertyBag `json:"properties,omitempty"`
 
 	// The role or roles played by the artifact in the analysis.
-	Roles []interface{} `json:"roles,omitempty"`
+	Roles []any `json:"roles,omitempty"`
 
 	// Specifies the source language for any artifact object that refers to a text file that contains source code.
 	SourceLanguage string `json:"sourceLanguage,omitempty"`
@@ -307,7 +307,7 @@ type ExternalProperties struct {
 	Translations []*ToolComponent `json:"translations,omitempty"`
 
 	// The SARIF format version of this external properties object.
-	Version interface{} `json:"version,omitempty"`
+	Version any `json:"version,omitempty"`
 
 	// Requests that will be merged with a separate run.
 	WebRequests []*WebRequest `json:"webRequests,omitempty"`
@@ -583,7 +583,7 @@ type LogFile struct {
 	Schema string `json:"$schema,omitempty"`
 
 	// The SARIF format version of this log file.
-	Version interface{} `json:"version"`
+	Version any `json:"version"`
 }
 
 // LogicalLocation A logical location of a construct that produced a result.
@@ -675,7 +675,7 @@ type Notification struct {
 	Exception *Exception `json:"exception,omitempty"`
 
 	// A value specifying the severity level of the notification.
-	Level interface{} `json:"level,omitempty"`
+	Level any `json:"level,omitempty"`
 
 	// The locations relevant to this notification.
 	Locations []*Location `json:"locations,omitempty"`
@@ -712,7 +712,7 @@ type PhysicalLocation struct {
 	Region *Region `json:"region,omitempty"`
 }
 
-type PropertyBag map[string]interface{}
+type PropertyBag map[string]any
 
 /*
 // PropertyBag Key/value pairs that provide additional information about the object.
@@ -805,7 +805,7 @@ type ReportingConfiguration struct {
 	Enabled bool `json:"enabled,omitempty"`
 
 	// Specifies the failure level for the report.
-	Level interface{} `json:"level,omitempty"`
+	Level any `json:"level,omitempty"`
 
 	// Contains configuration information specific to a report.
 	Parameters *PropertyBag `json:"parameters,omitempty"`
@@ -908,7 +908,7 @@ type Result struct {
 	Attachments []*Attachment `json:"attachments,omitempty"`
 
 	// The state of a result relative to a baseline of a previous run.
-	BaselineState interface{} `json:"baselineState,omitempty"`
+	BaselineState any `json:"baselineState,omitempty"`
 
 	// An array of 'codeFlow' objects relevant to the result.
 	CodeFlows []*CodeFlow `json:"codeFlows,omitempty"`
@@ -935,10 +935,10 @@ type Result struct {
 	HostedViewerUri string `json:"hostedViewerUri,omitempty"`
 
 	// A value that categorizes results by evaluation state.
-	Kind interface{} `json:"kind,omitempty"`
+	Kind any `json:"kind,omitempty"`
 
 	// A value specifying the severity level of the result.
-	Level interface{} `json:"level,omitempty"`
+	Level any `json:"level,omitempty"`
 
 	// The set of locations where the result was detected. Specify only one location unless the problem indicated by the result can only be corrected by making a change at every specified location.
 	Locations []*Location `json:"locations,omitempty"`
@@ -1033,7 +1033,7 @@ type Run struct {
 	BaselineGuid string `json:"baselineGuid,omitempty"`
 
 	// Specifies the unit in which the tool measures columns.
-	ColumnKind interface{} `json:"columnKind,omitempty"`
+	ColumnKind any `json:"columnKind,omitempty"`
 
 	// A conversion object that describes how a converter transformed an analysis tool's native reporting format into the SARIF format.
 	Conversion *Conversion `json:"conversion,omitempty"`
@@ -1185,7 +1185,7 @@ type Suppression struct {
 	Properties *PropertyBag `json:"properties,omitempty"`
 
 	// A string that indicates the review status of the suppression.
-	Status interface{} `json:"status,omitempty"`
+	Status any `json:"status,omitempty"`
 }
 
 // ThreadFlow Describes a sequence of code locations that specify a path through a single thread of execution such as an operating system or fiber.
@@ -1220,7 +1220,7 @@ type ThreadFlowLocation struct {
 	ExecutionTimeUtc string `json:"executionTimeUtc,omitempty"`
 
 	// Specifies the importance of this location in understanding the code flow in which it occurs. The order from most to least important is "essential", "important", "unimportant". Default: "important".
-	Importance interface{} `json:"importance,omitempty"`
+	Importance any `json:"importance,omitempty"`
 
 	// The index within the run threadFlowLocations array.
 	Index int `json:"index,omitempty"`
@@ -1276,7 +1276,7 @@ type ToolComponent struct {
 	AssociatedComponent *ToolComponentReference `json:"associatedComponent,omitempty"`
 
 	// The kinds of data contained in this object.
-	Contents []interface{} `json:"contents,omitempty"`
+	Contents []any `json:"contents,omitempty"`
 
 	// The binary version of the tool component's primary executable file expressed as four non-negative integers separated by a period (for operating systems that express file versions in this way).
 	DottedQuadFileVersion string `json:"dottedQuadFileVersion,omitempty"`

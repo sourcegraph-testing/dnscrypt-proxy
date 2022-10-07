@@ -20,7 +20,7 @@ type reflectMessageInfo struct {
 	// fieldTypes contains the zero value of an enum or message field.
 	// For lists, it contains the element type.
 	// For maps, it contains the entry value type.
-	fieldTypes map[pref.FieldNumber]interface{}
+	fieldTypes map[pref.FieldNumber]any
 
 	// denseFields is a subset of fields where:
 	//	0 < fieldDesc.Number() < len(denseFields)
@@ -28,7 +28,7 @@ type reflectMessageInfo struct {
 	denseFields []*fieldInfo
 
 	// rangeInfos is a list of all fields (not belonging to a oneof) and oneofs.
-	rangeInfos []interface{} // either *fieldInfo or *oneofInfo
+	rangeInfos []any // either *fieldInfo or *oneofInfo
 
 	getUnknown   func(pointer) pref.RawFields
 	setUnknown   func(pointer, pref.RawFields)
@@ -224,7 +224,7 @@ func (mi *MessageInfo) makeFieldTypes(si structInfo) {
 		}
 		if ft != nil {
 			if mi.fieldTypes == nil {
-				mi.fieldTypes = make(map[pref.FieldNumber]interface{})
+				mi.fieldTypes = make(map[pref.FieldNumber]any)
 			}
 			mi.fieldTypes[fd.Number()] = reflect.Zero(ft).Interface()
 		}
@@ -320,7 +320,6 @@ func (m *extensionMap) Mutable(xt pref.ExtensionType) pref.Value {
 // in an allocation-free way without needing to have a shadow Go type generated
 // for every message type. This technique only works using unsafe.
 //
-//
 // Example generated code:
 //
 //	type M struct {
@@ -351,12 +350,11 @@ func (m *extensionMap) Mutable(xt pref.ExtensionType) pref.Value {
 // It has access to the message info as its first field, and a pointer to the
 // MessageState is identical to a pointer to the concrete message value.
 //
-//
 // Requirements:
-//	• The type M must implement protoreflect.ProtoMessage.
-//	• The address of m must not be nil.
-//	• The address of m and the address of m.state must be equal,
-//	even though they are different Go types.
+//   - The type M must implement protoreflect.ProtoMessage.
+//   - The address of m must not be nil.
+//   - The address of m and the address of m.state must be equal,
+//     even though they are different Go types.
 type MessageState struct {
 	pragma.NoUnkeyedLiterals
 	pragma.DoNotCompare
@@ -396,7 +394,7 @@ var (
 // MessageOf returns a reflective view over a message. The input must be a
 // pointer to a named Go struct. If the provided type has a ProtoReflect method,
 // it must be implemented by calling this method.
-func (mi *MessageInfo) MessageOf(m interface{}) pref.Message {
+func (mi *MessageInfo) MessageOf(m any) pref.Message {
 	if reflect.TypeOf(m) != mi.GoReflectType {
 		panic(fmt.Sprintf("type mismatch: got %T, want %v", m, mi.GoReflectType))
 	}
@@ -424,7 +422,7 @@ func (m *messageIfaceWrapper) Reset() {
 func (m *messageIfaceWrapper) ProtoReflect() pref.Message {
 	return (*messageReflectWrapper)(m)
 }
-func (m *messageIfaceWrapper) protoUnwrap() interface{} {
+func (m *messageIfaceWrapper) protoUnwrap() any {
 	return m.p.AsIfaceOf(m.mi.GoReflectType.Elem())
 }
 

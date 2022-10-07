@@ -112,10 +112,10 @@ function for sub-structs, and currently only definite types can be marshaled
 
 The following struct annotations are supported:
 
-  toml:"Field"      Overrides the field's name to output.
-  omitempty         When set, empty values and groups are not emitted.
-  comment:"comment" Emits a # comment on the same line. This supports new lines.
-  commented:"true"  Emits the value as commented.
+	toml:"Field"      Overrides the field's name to output.
+	omitempty         When set, empty values and groups are not emitted.
+	comment:"comment" Emits a # comment on the same line. This supports new lines.
+	commented:"true"  Emits the value as commented.
 
 Note that pointers are automatically assigned the "omitempty" option, as TOML
 explicitly does not handle null values (saying instead the label should be
@@ -123,21 +123,21 @@ dropped).
 
 Tree structural types and corresponding marshal types:
 
-  *Tree                            (*)struct, (*)map[string]interface{}
-  []*Tree                          (*)[](*)struct, (*)[](*)map[string]interface{}
-  []interface{} (as interface{})   (*)[]primitive, (*)[]([]interface{})
-  interface{}                      (*)primitive
+	*Tree                            (*)struct, (*)map[string]interface{}
+	[]*Tree                          (*)[](*)struct, (*)[](*)map[string]interface{}
+	[]interface{} (as interface{})   (*)[]primitive, (*)[]([]interface{})
+	interface{}                      (*)primitive
 
 Tree primitive types and corresponding marshal types:
 
-  uint64     uint, uint8-uint64, pointers to same
-  int64      int, int8-uint64, pointers to same
-  float64    float32, float64, pointers to same
-  string     string, pointers to same
-  bool       bool, pointers to same
-  time.Time  time.Time{}, pointers to same
+	uint64     uint, uint8-uint64, pointers to same
+	int64      int, int8-uint64, pointers to same
+	float64    float32, float64, pointers to same
+	string     string, pointers to same
+	bool       bool, pointers to same
+	time.Time  time.Time{}, pointers to same
 */
-func Marshal(v interface{}) ([]byte, error) {
+func Marshal(v any) ([]byte, error) {
 	return NewEncoder(nil).marshal(v)
 }
 
@@ -158,7 +158,7 @@ func NewEncoder(w io.Writer) *Encoder {
 // Encode writes the TOML encoding of v to the stream.
 //
 // See the documentation for Marshal for details.
-func (e *Encoder) Encode(v interface{}) error {
+func (e *Encoder) Encode(v any) error {
 	b, err := e.marshal(v)
 	if err != nil {
 		return err
@@ -183,21 +183,21 @@ func (e *Encoder) QuoteMapKeys(v bool) *Encoder {
 //
 // For example:
 //
-//   A = [1,2,3]
+//	A = [1,2,3]
 //
 // Becomes
 //
-//   A = [
-//     1,
-//     2,
-//     3,
-//   ]
+//	A = [
+//	  1,
+//	  2,
+//	  3,
+//	]
 func (e *Encoder) ArraysWithOneElementPerLine(v bool) *Encoder {
 	e.arraysOneElementPerLine = v
 	return e
 }
 
-func (e *Encoder) marshal(v interface{}) ([]byte, error) {
+func (e *Encoder) marshal(v any) ([]byte, error) {
 	mtype := reflect.TypeOf(v)
 	if mtype.Kind() != reflect.Struct {
 		return []byte{}, errors.New("Only a struct can be marshaled to TOML")
@@ -276,8 +276,8 @@ func (e *Encoder) valueToTreeSlice(mtype reflect.Type, mval reflect.Value) ([]*T
 }
 
 // Convert given marshal slice to slice of toml values
-func (e *Encoder) valueToOtherSlice(mtype reflect.Type, mval reflect.Value) (interface{}, error) {
-	tval := make([]interface{}, mval.Len(), mval.Len())
+func (e *Encoder) valueToOtherSlice(mtype reflect.Type, mval reflect.Value) (any, error) {
+	tval := make([]any, mval.Len(), mval.Len())
 	for i := 0; i < mval.Len(); i++ {
 		val, err := e.valueToToml(mtype.Elem(), mval.Index(i))
 		if err != nil {
@@ -289,7 +289,7 @@ func (e *Encoder) valueToOtherSlice(mtype reflect.Type, mval reflect.Value) (int
 }
 
 // Convert given marshal value to toml value
-func (e *Encoder) valueToToml(mtype reflect.Type, mval reflect.Value) (interface{}, error) {
+func (e *Encoder) valueToToml(mtype reflect.Type, mval reflect.Value) (any, error) {
 	if mtype.Kind() == reflect.Ptr {
 		return e.valueToToml(mtype.Elem(), mval.Elem())
 	}
@@ -325,7 +325,7 @@ func (e *Encoder) valueToToml(mtype reflect.Type, mval reflect.Value) (interface
 // Unmarshal attempts to unmarshal the Tree into a Go struct pointed by v.
 // Neither Unmarshaler interfaces nor UnmarshalTOML functions are supported for
 // sub-structs, and only definite types can be unmarshaled.
-func (t *Tree) Unmarshal(v interface{}) error {
+func (t *Tree) Unmarshal(v any) error {
 	d := Decoder{tval: t}
 	return d.unmarshal(v)
 }
@@ -346,10 +346,10 @@ func (t *Tree) Marshal() ([]byte, error) {
 //
 // The following struct annotations are supported:
 //
-//   toml:"Field" Overrides the field's name to map to.
+//	toml:"Field" Overrides the field's name to map to.
 //
 // See Marshal() documentation for types mapping table.
-func Unmarshal(data []byte, v interface{}) error {
+func Unmarshal(data []byte, v any) error {
 	t, err := LoadReader(bytes.NewReader(data))
 	if err != nil {
 		return err
@@ -376,7 +376,7 @@ func NewDecoder(r io.Reader) *Decoder {
 // and unmarshals it in the value pointed at by v.
 //
 // See the documentation for Marshal for details.
-func (d *Decoder) Decode(v interface{}) error {
+func (d *Decoder) Decode(v any) error {
 	var err error
 	d.tval, err = LoadReader(d.r)
 	if err != nil {
@@ -385,7 +385,7 @@ func (d *Decoder) Decode(v interface{}) error {
 	return d.unmarshal(v)
 }
 
-func (d *Decoder) unmarshal(v interface{}) error {
+func (d *Decoder) unmarshal(v any) error {
 	mtype := reflect.TypeOf(v)
 	if mtype.Kind() != reflect.Ptr || mtype.Elem().Kind() != reflect.Struct {
 		return errors.New("Only a pointer to struct can be unmarshaled from TOML")
@@ -458,7 +458,7 @@ func (d *Decoder) valueFromTreeSlice(mtype reflect.Type, tval []*Tree) (reflect.
 }
 
 // Convert toml value to marshal primitive slice, using marshal type
-func (d *Decoder) valueFromOtherSlice(mtype reflect.Type, tval []interface{}) (reflect.Value, error) {
+func (d *Decoder) valueFromOtherSlice(mtype reflect.Type, tval []any) (reflect.Value, error) {
 	mval := reflect.MakeSlice(mtype, len(tval), len(tval))
 	for i := 0; i < len(tval); i++ {
 		val, err := d.valueFromToml(mtype.Elem(), tval[i])
@@ -471,7 +471,7 @@ func (d *Decoder) valueFromOtherSlice(mtype reflect.Type, tval []interface{}) (r
 }
 
 // Convert toml value to marshal value, using marshal type
-func (d *Decoder) valueFromToml(mtype reflect.Type, tval interface{}) (reflect.Value, error) {
+func (d *Decoder) valueFromToml(mtype reflect.Type, tval any) (reflect.Value, error) {
 	if mtype.Kind() == reflect.Ptr {
 		return d.unwrapPointer(mtype, tval)
 	}
@@ -487,9 +487,9 @@ func (d *Decoder) valueFromToml(mtype reflect.Type, tval interface{}) (reflect.V
 			return d.valueFromTreeSlice(mtype, tval.([]*Tree))
 		}
 		return reflect.ValueOf(nil), fmt.Errorf("Can't convert %v(%T) to trees", tval, tval)
-	case []interface{}:
+	case []any:
 		if isOtherSlice(mtype) {
-			return d.valueFromOtherSlice(mtype, tval.([]interface{}))
+			return d.valueFromOtherSlice(mtype, tval.([]any))
 		}
 		return reflect.ValueOf(nil), fmt.Errorf("Can't convert %v(%T) to a slice", tval, tval)
 	default:
@@ -549,7 +549,7 @@ func (d *Decoder) valueFromToml(mtype reflect.Type, tval interface{}) (reflect.V
 	}
 }
 
-func (d *Decoder) unwrapPointer(mtype reflect.Type, tval interface{}) (reflect.Value, error) {
+func (d *Decoder) unwrapPointer(mtype reflect.Type, tval any) (reflect.Value, error) {
 	val, err := d.valueFromToml(mtype.Elem(), tval)
 	if err != nil {
 		return reflect.ValueOf(nil), err

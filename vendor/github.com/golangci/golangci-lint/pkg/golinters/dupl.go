@@ -31,7 +31,7 @@ func NewDupl() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var fileNames []string
 			for _, f := range pass.Files {
 				pos := pass.Fset.PositionFor(f.Pos(), false)

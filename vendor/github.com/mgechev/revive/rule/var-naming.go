@@ -213,8 +213,8 @@ func (w *lintNames) Visit(n ast.Node) ast.Visitor {
 	return w
 }
 
-func getList(arg interface{}, argName string) []string {
-	temp, ok := arg.([]interface{})
+func getList(arg any, argName string) []string {
+	temp, ok := arg.([]any)
 	if !ok {
 		panic(fmt.Sprintf("Invalid argument to the var-naming rule. Expecting a %s of type slice with initialisms, got %T", argName, arg))
 	}

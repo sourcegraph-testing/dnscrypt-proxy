@@ -37,7 +37,7 @@ func NewGci() *goanalysis.Linter {
 			localFlag = goimportsFlag
 		}
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var fileNames []string
 			for _, f := range pass.Files {
 				pos := pass.Fset.PositionFor(f.Pos(), false)

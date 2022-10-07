@@ -19,7 +19,7 @@ func NewAnalyzer() *analysis.Analyzer {
 	}
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	for _, file := range pass.Files {
 		tlds := enumerateFileDecls(file)
 
@@ -36,7 +36,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 }
 
 // render returns the pretty-print of the given node.
-func render(fset *token.FileSet, x interface{}) string {
+func render(fset *token.FileSet, x any) string {
 	var buf bytes.Buffer
 	if err := printer.Fprint(&buf, fset, x); err != nil {
 		panic(err)

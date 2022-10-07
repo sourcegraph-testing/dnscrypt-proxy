@@ -30,7 +30,7 @@ func NewPromlinter() *goanalysis.Linter {
 		strict := lintCtx.Cfg.LintersSettings.Promlinter.Strict
 		disabledLinters := lintCtx.Cfg.LintersSettings.Promlinter.DisabledLinters
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			issues := promlinter.RunLint(pass.Fset, pass.Files, promlinter.Setting{
 				Strict:            strict,
 				DisabledLintFuncs: disabledLinters,

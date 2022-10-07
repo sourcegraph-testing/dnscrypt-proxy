@@ -95,7 +95,7 @@ func NewMisspell() *goanalysis.Linter {
 			r.Compile()
 		}
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			if ruleErr != nil {
 				return nil, ruleErr
 			}

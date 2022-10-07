@@ -27,7 +27,7 @@ const (
 )
 
 // Config is used to provide configuration and customization to each of the rules.
-type Config map[string]interface{}
+type Config map[string]any
 
 // NewConfig initializes a new configuration instance. The configuration data then
 // needs to be loaded via c.ReadFrom(strings.NewReader("config data"))
@@ -44,7 +44,7 @@ func (c Config) keyToGlobalOptions(key string) GlobalOption {
 
 func (c Config) convertGlobals() {
 	if globals, ok := c[Globals]; ok {
-		if settings, ok := globals.(map[string]interface{}); ok {
+		if settings, ok := globals.(map[string]any); ok {
 			validGlobals := map[GlobalOption]string{}
 			for k, v := range settings {
 				validGlobals[c.keyToGlobalOptions(k)] = fmt.Sprintf("%v", v)
@@ -56,7 +56,7 @@ func (c Config) convertGlobals() {
 
 // ReadFrom implements the io.ReaderFrom interface. This
 // should be used with io.Reader to load configuration from
-//file or from string etc.
+// file or from string etc.
 func (c Config) ReadFrom(r io.Reader) (int64, error) {
 	data, err := ioutil.ReadAll(r)
 	if err != nil {
@@ -80,7 +80,7 @@ func (c Config) WriteTo(w io.Writer) (int64, error) {
 }
 
 // Get returns the configuration section for the supplied key
-func (c Config) Get(section string) (interface{}, error) {
+func (c Config) Get(section string) (any, error) {
 	settings, found := c[section]
 	if !found {
 		return nil, fmt.Errorf("Section %s not in configuration", section)
@@ -89,7 +89,7 @@ func (c Config) Get(section string) (interface{}, error) {
 }
 
 // Set section in the configuration to specified value
-func (c Config) Set(section string, value interface{}) {
+func (c Config) Set(section string, value any) {
 	c[section] = value
 }
 

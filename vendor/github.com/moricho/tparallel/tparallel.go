@@ -23,7 +23,7 @@ var Analyzer = &analysis.Analyzer{
 	},
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	ssaanalyzer := pass.ResultOf[buildssa.Analyzer].(*buildssa.SSA)
 
 	obj := analysisutil.ObjectOf(pass, "testing", "T")

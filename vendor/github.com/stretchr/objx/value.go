@@ -9,11 +9,11 @@ import (
 // types.
 type Value struct {
 	// data contains the raw data being managed by this Value
-	data interface{}
+	data any
 }
 
 // Data returns the raw data contained by this Value
-func (v *Value) Data() interface{} {
+func (v *Value) Data() any {
 	return v.data
 }
 

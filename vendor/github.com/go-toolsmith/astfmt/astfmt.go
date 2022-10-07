@@ -14,7 +14,7 @@ import (
 // for ast.Node arguments.
 //
 // Uses empty file set for AST printing.
-func Println(args ...interface{}) error {
+func Println(args ...any) error {
 	return defaultPrinter.Println(args...)
 }
 
@@ -22,7 +22,7 @@ func Println(args ...interface{}) error {
 // for ast.Node arguments.
 //
 // Uses empty file set for AST printing.
-func Fprintf(w io.Writer, format string, args ...interface{}) error {
+func Fprintf(w io.Writer, format string, args ...any) error {
 	return defaultPrinter.Fprintf(w, format, args...)
 }
 
@@ -30,7 +30,7 @@ func Fprintf(w io.Writer, format string, args ...interface{}) error {
 // for ast.Node arguments.
 //
 // Uses empty file set for AST printing.
-func Sprintf(format string, args ...interface{}) string {
+func Sprintf(format string, args ...any) string {
 	return defaultPrinter.Sprintf(format, args...)
 }
 
@@ -38,7 +38,7 @@ func Sprintf(format string, args ...interface{}) string {
 // for ast.Node arguments.
 //
 // Uses empty file set for AST printing.
-func Sprint(args ...interface{}) string {
+func Sprint(args ...any) string {
 	return defaultPrinter.Sprint(args...)
 }
 
@@ -55,24 +55,24 @@ type Printer struct {
 }
 
 // Println printer method is like Println function, but uses bound file set when printing.
-func (p *Printer) Println(args ...interface{}) error {
+func (p *Printer) Println(args ...any) error {
 	_, err := fmt.Println(wrapArgs(p.fset, args)...)
 	return err
 }
 
 // Fprintf printer method is like Fprintf function, but uses bound file set when printing.
-func (p *Printer) Fprintf(w io.Writer, format string, args ...interface{}) error {
+func (p *Printer) Fprintf(w io.Writer, format string, args ...any) error {
 	_, err := fmt.Fprintf(w, format, wrapArgs(p.fset, args)...)
 	return err
 }
 
 // Sprintf printer method is like Sprintf function, but uses bound file set when printing.
-func (p *Printer) Sprintf(format string, args ...interface{}) string {
+func (p *Printer) Sprintf(format string, args ...any) string {
 	return fmt.Sprintf(format, wrapArgs(p.fset, args)...)
 }
 
 // Sprint printer method is like Sprint function, but uses bound file set when printing.
-func (p *Printer) Sprint(args ...interface{}) string {
+func (p *Printer) Sprint(args ...any) string {
 	return fmt.Sprint(wrapArgs(p.fset, args)...)
 }
 
@@ -82,7 +82,7 @@ var defaultPrinter = NewPrinter(token.NewFileSet())
 
 // wrapArgs returns arguments slice with every ast.Node element
 // replaced with fmtNode wrapper that supports additional formatting.
-func wrapArgs(fset *token.FileSet, args []interface{}) []interface{} {
+func wrapArgs(fset *token.FileSet, args []any) []any {
 	for i := range args {
 		if x, ok := args[i].(ast.Node); ok {
 			args[i] = fmtNode{fset: fset, node: x}

@@ -268,7 +268,7 @@ func (lx *lexer) errorPos(start, length int, err error) stateFn {
 }
 
 // errorf is like error, and creates a new error.
-func (lx *lexer) errorf(format string, values ...interface{}) stateFn {
+func (lx *lexer) errorf(format string, values ...any) stateFn {
 	if lx.atEOF {
 		pos := lx.getPos()
 		pos.Line--
@@ -771,7 +771,7 @@ func lexRawString(lx *lexer) stateFn {
 }
 
 // lexMultilineRawString consumes a raw string. Nothing can be escaped in such
-// a string. It assumes that the beginning "'''" has already been consumed and
+// a string. It assumes that the beginning "”'" has already been consumed and
 // ignored.
 func lexMultilineRawString(lx *lexer) stateFn {
 	r := lx.next()

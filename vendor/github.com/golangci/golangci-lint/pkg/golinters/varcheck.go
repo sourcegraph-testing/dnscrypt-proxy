@@ -27,7 +27,7 @@ func NewVarcheck() *goanalysis.Linter {
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
 		checkExported := lintCtx.Settings().Varcheck.CheckExportedFields
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			prog := goanalysis.MakeFakeLoaderProgram(pass)
 
 			varcheckIssues := varcheckAPI.Run(prog, checkExported)

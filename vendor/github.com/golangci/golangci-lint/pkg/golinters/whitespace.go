@@ -31,7 +31,7 @@ func NewWhitespace() *goanalysis.Linter {
 		cfg := lintCtx.Cfg.LintersSettings.Whitespace
 		settings := whitespace.Settings{MultiIf: cfg.MultiIf, MultiFunc: cfg.MultiFunc}
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var issues []whitespace.Message
 			for _, file := range pass.Files {
 				issues = append(issues, whitespace.Run(file, pass.Fset, settings)...)

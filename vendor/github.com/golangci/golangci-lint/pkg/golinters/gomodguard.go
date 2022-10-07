@@ -71,7 +71,7 @@ func NewGomodguard() *goanalysis.Linter {
 			return
 		}
 
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var files []string
 
 			for _, file := range pass.Files {

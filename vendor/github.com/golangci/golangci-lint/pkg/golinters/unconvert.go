@@ -25,7 +25,7 @@ func NewUnconvert() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			prog := goanalysis.MakeFakeLoaderProgram(pass)
 
 			positions := unconvertAPI.Run(prog)

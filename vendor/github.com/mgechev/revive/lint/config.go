@@ -1,7 +1,7 @@
 package lint
 
 // Arguments is type used for the arguments of a rule.
-type Arguments = []interface{}
+type Arguments = []any
 
 // RuleConfig is type used for the rule configuration.
 type RuleConfig struct {

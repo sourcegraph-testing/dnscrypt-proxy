@@ -36,8 +36,8 @@ type runner struct {
 	sqlPkgs  []string
 }
 
-func NewRun(pkgs ...string) func(pass *analysis.Pass) (interface{}, error) {
-	return func(pass *analysis.Pass) (interface{}, error) {
+func NewRun(pkgs ...string) func(pass *analysis.Pass) (any, error) {
+	return func(pass *analysis.Pass) (any, error) {
 		sqlPkgs := append(pkgs, "database/sql")
 		for _, pkg := range sqlPkgs {
 			r := new(runner)

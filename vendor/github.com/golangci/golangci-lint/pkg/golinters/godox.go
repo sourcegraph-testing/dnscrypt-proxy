@@ -29,7 +29,7 @@ func NewGodox() *goanalysis.Linter {
 		[]*analysis.Analyzer{analyzer},
 		nil,
 	).WithContextSetter(func(lintCtx *linter.Context) {
-		analyzer.Run = func(pass *analysis.Pass) (interface{}, error) {
+		analyzer.Run = func(pass *analysis.Pass) (any, error) {
 			var issues []godox.Message
 			for _, file := range pass.Files {
 				issues = append(issues, godox.Run(file, pass.Fset, lintCtx.Settings().Godox.Keywords...)...)

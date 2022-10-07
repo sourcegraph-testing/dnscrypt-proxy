@@ -38,7 +38,7 @@ func (m *matcher) stringValue(inst instruction) string {
 	return m.prog.strings[inst.valueIndex]
 }
 
-func (m *matcher) ifaceValue(inst instruction) interface{} {
+func (m *matcher) ifaceValue(inst instruction) any {
 	return m.prog.ifaces[inst.valueIndex]
 }
 
@@ -647,7 +647,7 @@ func findNamed(capture []CapturedNode, name string) (ast.Node, bool) {
 	return nil, false
 }
 
-func literalValue(lit *ast.BasicLit) interface{} {
+func literalValue(lit *ast.BasicLit) any {
 	switch lit.Kind {
 	case token.INT:
 		v, err := strconv.ParseInt(lit.Value, 0, 64)

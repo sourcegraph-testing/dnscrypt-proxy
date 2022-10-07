@@ -38,7 +38,7 @@ type Pattern struct {
 }
 
 type pattern struct {
-	value interface{}
+	value any
 	op    patternOp
 	subs  []*pattern
 }

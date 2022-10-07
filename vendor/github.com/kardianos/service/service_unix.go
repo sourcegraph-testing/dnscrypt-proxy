@@ -2,6 +2,7 @@
 // Use of this source code is governed by a zlib-style
 // license that can be found in the LICENSE file.
 
+//go:build linux || darwin || solaris || aix || freebsd
 // +build linux darwin solaris aix freebsd
 
 package service
@@ -36,22 +37,22 @@ func (s sysLogger) send(err error) error {
 	return err
 }
 
-func (s sysLogger) Error(v ...interface{}) error {
+func (s sysLogger) Error(v ...any) error {
 	return s.send(s.Writer.Err(fmt.Sprint(v...)))
 }
-func (s sysLogger) Warning(v ...interface{}) error {
+func (s sysLogger) Warning(v ...any) error {
 	return s.send(s.Writer.Warning(fmt.Sprint(v...)))
 }
-func (s sysLogger) Info(v ...interface{}) error {
+func (s sysLogger) Info(v ...any) error {
 	return s.send(s.Writer.Info(fmt.Sprint(v...)))
 }
-func (s sysLogger) Errorf(format string, a ...interface{}) error {
+func (s sysLogger) Errorf(format string, a ...any) error {
 	return s.send(s.Writer.Err(fmt.Sprintf(format, a...)))
 }
-func (s sysLogger) Warningf(format string, a ...interface{}) error {
+func (s sysLogger) Warningf(format string, a ...any) error {
 	return s.send(s.Writer.Warning(fmt.Sprintf(format, a...)))
 }
-func (s sysLogger) Infof(format string, a ...interface{}) error {
+func (s sysLogger) Infof(format string, a ...any) error {
 	return s.send(s.Writer.Info(fmt.Sprintf(format, a...)))
 }
 

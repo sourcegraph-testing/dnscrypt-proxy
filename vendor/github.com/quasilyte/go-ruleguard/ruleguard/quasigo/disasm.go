@@ -32,7 +32,7 @@ func disasm(env *Env, fn *Func) string {
 		if l := labels[pc]; l != "" {
 			fmt.Fprintf(&out, "%s:\n", l)
 		}
-		var arg interface{}
+		var arg any
 		var comment string
 		switch op {
 		case opCallNative:

@@ -24,7 +24,7 @@ var Analyzer = &analysis.Analyzer{
 
 const Doc = "nilerr checks returning nil when err is not nil"
 
-func run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (any, error) {
 	funcs := pass.ResultOf[buildssa.Analyzer].(*buildssa.SSA).SrcFuncs
 	cmaps := pass.ResultOf[commentmap.Analyzer].(comment.Maps)
 
