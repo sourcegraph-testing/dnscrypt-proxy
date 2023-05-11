@@ -124,3 +124,4 @@ feel free to raise an [issue](https://github.com/bombsimon/wsl/issues/new).
 * [Short declarations should cuddle only with other short declarations](doc/rules.md#short-declaration-should-cuddle-only-with-other-short-declarations)
 * [Switch statements should only be cuddled with variables switched](doc/rules.md#switch-statements-should-only-be-cuddled-with-variables-switched)
 * [Type switch statements should only be cuddled with variables switched](doc/rules.md#type-switch-statements-should-only-be-cuddled-with-variables-switched)
+Hello World

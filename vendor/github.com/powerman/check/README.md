@@ -86,3 +86,4 @@ go get github.com/powerman/check
   - [ ] Auto-detect missed `t:=check.T(tt)` - try to intercept `Run()` and
     `Parallel()` for detecting using wrong `t` (looks like golangci-lint's
     tparallel catch at least `Parallel()` case).
+Hello World

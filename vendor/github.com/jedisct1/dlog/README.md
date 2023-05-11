@@ -11,3 +11,4 @@ Cool, but all I wanted is something super dumb, that just exposes `log.Info()`, 
 I don't need a super flexible kitchen sink. Just something super basic and trivial to use. I just want it to handle different log levels, and be able to write simple logs to `stderr`, to a local file, to `syslog` and to the Windows event log.
 
 So, here's one more logging library for Go. The dumbest of them all. Enjoy.
+Hello World

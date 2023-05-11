@@ -71,3 +71,4 @@ func main() {
 	fmt.Println(tags) // Output: hcl:"foo,squash" json:"foo_bar" xml:"foo"
 }
 ```
+Hello World

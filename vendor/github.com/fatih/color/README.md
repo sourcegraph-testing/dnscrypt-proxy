@@ -176,3 +176,4 @@ To output color in GitHub Actions (or other CI systems that support ANSI colors)
 ## License
 
 The MIT License (MIT) - see [`LICENSE.md`](https://github.com/fatih/color/blob/master/LICENSE.md) for more details
+Hello World

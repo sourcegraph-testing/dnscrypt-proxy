@@ -84,3 +84,4 @@ func main() {
 	fmt.Printf("%T %s\n", bar, bar.Name)
 }
 ```
+Hello World

@@ -86,3 +86,4 @@ If you have multiple entries in your GOPATH, replace `$GOPATH` with the right va
 Running M-x golint will run golint on the current file.
 
 For more usage, see [Compilation-Mode](http://www.gnu.org/software/emacs/manual/html_node/emacs/Compilation-Mode.html).
+Hello World

@@ -35,3 +35,4 @@ func main() {
 	fmt.Println(typep.IsArray(arr))           // => true
 }
 ```
+Hello World

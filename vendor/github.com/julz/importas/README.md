@@ -45,3 +45,4 @@ So it will enforce that
 
 "knative.dev/serving/pkg/apis/autoscaling/v1alpha1" is aliased by "autoscalingv1alpha1", and
 "knative.dev/serving/pkg/apis/serving/v1" is aliased by "servingv1"
+Hello World

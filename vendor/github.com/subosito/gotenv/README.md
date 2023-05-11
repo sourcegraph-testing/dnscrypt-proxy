@@ -129,3 +129,4 @@ err, pairs = gotenv.StrictParse(strings.NewReader(`FOO="bar"`))
 ## Notes
 
 The gotenv package is a Go port of [`dotenv`](https://github.com/bkeepers/dotenv) project with some additions made for Go. For general features, it aims to be compatible as close as possible.
+Hello World

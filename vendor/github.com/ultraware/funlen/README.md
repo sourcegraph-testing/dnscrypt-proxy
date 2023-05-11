@@ -7,3 +7,4 @@ The default limits are 60 lines and 40 statements. You can configure these.
 ## Installation guide
 
 Funlen is included in [golangci-lint](https://github.com/golangci/golangci-lint/). Install it and enable funlen.
+Hello World

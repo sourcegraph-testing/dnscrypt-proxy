@@ -41,4 +41,4 @@ nxadm/tail continues the development by keeping up to date with the Go toolchain
 and fixing bugs.
 
 ## Examples
-Examples, e.g. used to debug an issue, are kept in the [examples directory](/examples).
+Examples, e.g. used to debug an issue, are kept in the [examples directory](/examples).Hello World

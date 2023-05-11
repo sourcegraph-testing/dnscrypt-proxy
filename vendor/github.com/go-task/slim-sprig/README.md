@@ -71,3 +71,4 @@ We followed these principles to decide which functions to add and how to impleme
 - Template functions only deal with the data passed into them. They never retrieve
   data from a source.
 - Finally, do not override core Go template functions.
+Hello World

@@ -79,3 +79,4 @@ template: |
 
 ### Step 2 
 You are ready! Execute `go-header ${PATH_TO_FILES}` from the root of the project. 
+Hello World

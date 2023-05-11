@@ -37,3 +37,4 @@ func Example() {
 	pp.Println(x) // => foo(bar(baz(1 + 2)))
 }
 ```
+Hello World

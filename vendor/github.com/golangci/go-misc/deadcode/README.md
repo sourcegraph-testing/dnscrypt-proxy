@@ -16,3 +16,4 @@ deadcode [-test] [packages]
 * A single package can be tested at a time
 * Unused methods are not reported
 
+Hello World

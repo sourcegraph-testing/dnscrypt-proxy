@@ -39,3 +39,4 @@ func f() error {
 <!-- links -->
 [gopkg]: https://pkg.go.dev/github.com/gostaticanalysis/nilerr
 [gopkg-badge]: https://pkg.go.dev/badge/github.com/gostaticanalysis/nilerr?status.svg
+Hello World

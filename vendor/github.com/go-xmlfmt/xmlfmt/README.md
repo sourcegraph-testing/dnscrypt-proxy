@@ -176,3 +176,4 @@ echo '<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/" xmlns:_xmlns="
 
 This package is a direct translate from above Perl code into Go,
 then further enhanced by @ruandao.
+Hello World

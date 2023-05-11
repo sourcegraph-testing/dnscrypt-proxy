@@ -25,3 +25,4 @@ Linters included:
 
 * [golinters](https://github.com/thomasheller/golinters) - Report on
   linter support
+Hello World

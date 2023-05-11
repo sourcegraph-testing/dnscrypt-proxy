@@ -39,3 +39,4 @@ if locked {
 
 For more detailed usage information take a look at the package API docs on
 [GoDoc](https://godoc.org/github.com/gofrs/flock).
+Hello World
